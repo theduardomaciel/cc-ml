@@ -6,6 +6,8 @@
   <img alt="Atividade 01 - Pré-processamento" src="/.github/cover_light.png">
 </picture>
 
+<br />
+
 Para tudo que nos é enviado, assumimos que você está seguindo o código de honra a seguir.
 
 ## Código de Honra

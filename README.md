@@ -6,6 +6,8 @@
   <img alt="Aprendizagem de Máquina" src="/.github/cover_light.png">
 </picture>
 
+<br />
+
 Repositório da disciplina de Aprendizagem de Máquina dos cursos de Ciência da Computação e Engenharia da Computação do Instituto de Computação da Universidade Federal de Alagoas (IC/UFAL).
 
 A disciplina tem como objetivo apresentar os principais paradigmas de aprendizagem de máquina, incluindo uma variedade de algoritmos e técnicas. Ela também contempla uma gama de atividades práticas onde os principais algoritmos serão implementados e testados em dados sintéticos e reais. Fornecendo uma visão mais próxima da resolução de problemas e aplicação da aprendizagem de máquina.
