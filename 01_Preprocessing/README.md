@@ -45,3 +45,7 @@ Esse conjunto de dados, intitulado Pima Indians Diabetes Data Set, foi originalm
 
 Uma maneira fácil de instalar a versão mais nova do python com todas as dependências necessárias para aprendizagem de máquina e manipulação de dados é baixar a distribuição [Anaconda](https://www.anaconda.com/download/). 
 
+## Links Úteis
+
+-   [Dataset no Kaggle](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database)
+-   [Artigo interessante sobre o Dataset](https://pmc.ncbi.nlm.nih.gov/articles/PMC8943493/)
