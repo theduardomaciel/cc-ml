@@ -1,4 +1,10 @@
-# Aprendizagem de Máquina - IC/UFAL
+# Aprendizagem de Máquina
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./.github/cover.png">
+  <source media="(prefers-color-scheme: light)" srcset="./.github/cover_light.png">
+  <img alt="Aprendizagem de Máquina" src="/.github/cover_light.png">
+</picture>
 
 Repositório da disciplina de Aprendizagem de Máquina dos cursos de Ciência da Computação e Engenharia da Computação do Instituto de Computação da Universidade Federal de Alagoas (IC/UFAL).
 

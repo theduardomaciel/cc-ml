@@ -1,5 +1,11 @@
 # Atividade 01 - Pré-processamento
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./.github/cover.png">
+  <source media="(prefers-color-scheme: light)" srcset="./.github/cover_light.png">
+  <img alt="Atividade 01 - Pré-processamento" src="/.github/cover_light.png">
+</picture>
+
 Para tudo que nos é enviado, assumimos que você está seguindo o código de honra a seguir.
 
 ## Código de Honra
