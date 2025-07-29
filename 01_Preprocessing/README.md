@@ -9,60 +9,176 @@
 <br />
 <br />
 
-Para tudo que nos é enviado, assumimos que você está seguindo o código de honra a seguir.
+Para tudo que for enviado, assumimos que você está de acordo com o código de honra abaixo:
 
 ## Código de Honra
 
->"Como membro da comunidade deste curso, não vou participar nem tolerar a desonestidade acadêmica".
+> "Como membro da comunidade deste curso, não vou participar nem tolerar a desonestidade acadêmica."
 
-## Objetivo da atividade
-*Trabalhar o pré-processamento de dados para o algoritmo k-NN*
+<br />
 
-## Descrição da atividade
-Nesta atividade apresentamos duas versões de um mesmo programa em Python que lê um banco de dados de mulheres descendentes do povo Pima, o qual, segundo a [Wikipédia](https://en.wikipedia.org/wiki/Pima_people), "[...] são um povo nativo dos Estados Unidos da América que viviam às margens dos rios Gila e Sal, na parte sul do estado de Arizona."
+## 🎯 Objetivo da Atividade
 
-A primeira versão do programa Python (`diabetes_csv.py`) trabalha com arquivos de dados em formato `.csv` e a segunda com os arquivos em formato Excel (`diabetes_xlsx.py`). Deste modo você pode escolher o formato que preferir para trabalhar com os dados e fazer seu pré-processamento.
+**Trabalhar o pré-processamento de dados para o algoritmo k-NN.**
 
-A única modificação que precisa ser realizada no programa Python é a inserção da chave individual da equipe, substituindo o texto entre aspas.
+<br />
+
+## 📌 Descrição da Atividade
+
+Nesta atividade, apresentamos duas versões de um mesmo programa em Python que lê um banco de dados com informações de mulheres descendentes do povo Pima — o qual, segundo a [Wikipédia](https://en.wikipedia.org/wiki/Pima_people), "\[...] são um povo nativo dos Estados Unidos da América que viviam às margens dos rios Gila e Sal, na parte sul do estado do Arizona."
+
+As versões do programa são:
+
+* `diabetes_csv.py`: trabalha com arquivos no formato `.csv`;
+* `diabetes_xlsx.py`: trabalha com arquivos no formato `.xlsx` (Excel).
+
+Você pode escolher **qual formato prefere utilizar** para realizar o pré-processamento dos dados.
+
+A única modificação que precisa ser feita no código é a inserção da **chave individual da equipe**, substituindo o texto abaixo:
 
 ```python
 DEV_KEY = "COLOCAR_SUA_KEY_AQUI"
 ```
 
-Feito isso o programa já está completo, porém ainda não funcional, pois existem erros nos dados que precisam ser pré-processados para que cumpram tudo que é demandado pelo algoritmo k-NN para que este funcione bem.
+Feito isso, o programa já estará completo em termos de estrutura, **mas ainda não funcional**, pois os dados precisam ser **pré-processados** para atender aos requisitos do algoritmo **k-NN**, garantindo um bom desempenho.
 
-> A atividade da equipe consiste em **pré-processar os dados**, modificando os arquivos no formato escolhido, para que estes se encontrem da melhor maneira para o funcionamento do algoritmo k-NN.
+> A principal tarefa da equipe é **pré-processar os dados**, modificando os arquivos no formato escolhido, para deixá-los adequados ao funcionamento eficiente do algoritmo k-NN.
 
-Supondo que o formato escolhido tenha sido o .csv, o programa `diabetes_csv.py` lê o arquivo `diabetes_dataset.csv` (base de treino) e o armazena nos vetores `X` e `y`, em que:
-- X: dados das características (ex: idade, nível de glicose, pressão);
-- y: rótulo de saída (se tem ou não diabetes).
+<br />
 
-Em seguida ele constrói o modelo preditivo utilizando o k-NN com um `k = 3` e utiliza esse modelo para classificar os dados encontrados no arquivo `diabetes_app.csv` (base de teste).
+### 🧠 Como o programa funciona
 
-Tais previsões são enviadas para o servidor que vai contabilizar a acurácia (porcentagem de acertos) conseguida com as previsões realizadas, para em seguida retornar e armazenar o melhor desempenho conseguido pela equipe.
+Suponha que o formato escolhido seja `.csv`. O programa `diabetes_csv.py`:
 
-## Descrição da base de dados
+1. Lê o arquivo `diabetes_dataset.csv` (base de treino);
 
-Esse conjunto de dados, intitulado "Pima Indians Diabetes Data Set", foi desenvolvido pelo [National Institute of Diabetes and Digestive and Kidney Diseases](https://www.niddk.nih.gov/), cujo objetivo é prever se o paciente tem diabetes. 
+2. Armazena os dados nos vetores:
 
-Os pacientes selecionados são mulheres com pelo menos 21 anos e de herança indiana Prima. As informações da base de dados são descritas a seguir.
+   * `X`: características dos pacientes (ex: idade, glicose, pressão arterial etc.);
+   * `y`: rótulo ou classe (se o paciente tem ou não diabetes).
 
-#### Atributos do dataset:
+3. Treina um modelo preditivo utilizando o algoritmo **k-NN**, com `k = 3`.
+
+4. Usa esse modelo para classificar os dados contidos no arquivo `diabetes_app.csv` (base de teste).
+
+5. As **previsões** são enviadas para o **servidor**, que:
+
+   * Calcula a **acurácia** (porcentagem de acertos),
+   * Retorna o resultado para o programa,
+   * E armazena o **melhor desempenho obtido pela equipe** até o momento.
+
+<br />
+
+## 📚 Descrição da Base de Dados
+
+Esse conjunto de dados, intitulado **"Pima Indians Diabetes Data Set"**, foi desenvolvido pelo [National Institute of Diabetes and Digestive and Kidney Diseases](https://www.niddk.nih.gov/). Seu objetivo é **prever se um paciente tem diabetes**, com base em dados clínicos.
+
+Todos os pacientes do conjunto de dados são **mulheres com pelo menos 21 anos**, de **herança indígena Pima**.
+
+### 🔎 Atributos do dataset:
+
 1. **Pregnancies**: número de gestações
-2. **Glucose**: concentração plasmática de glicose a 2 horas em um teste oral de tolerância à glicose (Concentração de glicose no plasma)
-3. **BloodPressure**: pressão sanguínea diastólica (mm Hg)
+2. **Glucose**: concentração de glicose no plasma após 2h em teste oral de tolerância à glicose
+3. **BloodPressure**: pressão arterial diastólica (mm Hg)
 4. **SkinThickness**: espessura da dobra cutânea do tríceps (mm)
 5. **Insulin**: insulina sérica de 2 horas (mu U/ml)
-6. **BMI**: índice de massa corporal (peso em kg / (altura em m) ^ 2)
-7. **DiabetesPedigreeFunction**: função de pedigree do diabetes (hereditariedade)
+6. **BMI**: índice de massa corporal (peso em kg / altura em m²)
+7. **DiabetesPedigreeFunction**: função de pedigree (hereditariedade de diabetes)
 8. **Age**: idade (anos)
-9. **Outcome**: resultado, ou seja, variável de classe (0 ou 1) para diabetes
+9. **Outcome**: resultado (0 = não diabético, 1 = diabético)
 
-## Instalando o Python
+<br />
+
+## 🐍 Preparando o Ambiente
+
+### 1. Instale o Python
+
+Se você ainda não possui o Python instalado:
+
+#### 🔧 Windows
+
+1. Acesse o site oficial: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+2. Baixe a versão mais recente (recomendada: Python 3.10 ou superior)
+3. Durante a instalação, **marque a opção "Add Python to PATH"**.
+4. Após instalar, abra o terminal (cmd ou PowerShell) e execute:
+
+```bash
+python --version
+```
+
+Se tudo estiver correto, você verá a versão do Python instalada e estará pronto para rodar a atividade.
 
 
+<details>
+<summary>🐧 Linux</summary>
 
-## Links Úteis
+Use o gerenciador de pacotes da sua distribuição. Exemplo no Ubuntu/Debian:
 
--   [Dataset no Kaggle](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database)
--   [Artigo interessante sobre o Dataset](https://pmc.ncbi.nlm.nih.gov/articles/PMC8943493/)
+```bash
+sudo apt update
+sudo apt install python3 python3-pip
+```
+
+</details>
+
+<details>
+<summary>🍏 macOS</summary>
+
+Você pode instalar o Python usando o Homebrew. Se ainda não tiver o Homebrew instalado, siga as instruções em [https://brew.sh/](https://brew.sh/).
+
+```bash
+brew install python
+```
+
+</details>
+
+---
+
+### 2. Clone o repositório
+
+Se ainda não fez isso, clone o repositório para sua máquina:
+
+```bash
+git clone https://github.com/theduardomaciel/cc-ml.git
+cd cc-ml/01_Preprocessing/csv
+```
+
+### 3. Crie e ative um ambiente virtual (recomendado)
+
+
+<details>
+<summary>Windows (cmd ou PowerShell)</summary>
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+</details>
+
+<details>
+<summary>Linux/macOS</summary>
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+</details>
+
+### 4. Instale as dependências
+
+Com o ambiente virtual ativado, instale as dependências necessárias:
+
+```bash
+pip install -r requirements.txt
+```
+
+Pronto! Agora você pode rodar o script normalmente.
+
+<br />
+
+## 🔗 Links Úteis
+
+* 📁 [Dataset no Kaggle](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database)
+* 📄 [Artigo científico sobre o dataset](https://pmc.ncbi.nlm.nih.gov/articles/PMC8943493/)
