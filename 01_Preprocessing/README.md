@@ -140,7 +140,7 @@ Se ainda não fez isso, clone o repositório para sua máquina:
 
 ```bash
 git clone https://github.com/theduardomaciel/cc-ml.git
-cd cc-ml/01_Preprocessing/csv
+cd cc-ml/01_Preprocessing
 ```
 
 ### 3. Crie e ative um ambiente virtual (recomendado)

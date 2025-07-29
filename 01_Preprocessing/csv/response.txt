@@ -1,1 +1,1 @@
-{"status":"success","dev_key":"nebulosa","accuracy":0.5612244897959183,"old_accuracy":0}
+{"status":"success","dev_key":"nebulosa","accuracy":0.5714285714285714,"old_accuracy":0.56122448979592}
