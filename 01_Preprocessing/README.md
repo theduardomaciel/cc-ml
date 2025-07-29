@@ -174,7 +174,12 @@ Com o ambiente virtual ativado, instale as dependências necessárias:
 pip install -r requirements.txt
 ```
 
-Pronto! Agora você pode rodar o script normalmente.
+Pronto! Agora você pode rodar o script normalmente. Lembre-se de entrar na pasta correspondente ao formato escolhido (`csv` ou `xlsx`) antes de executar o script.
+
+```bash
+cd csv  # ou xlsx, dependendo do formato escolhido
+python diabetes_csv.py  # ou diabetes_xlsx.py
+```
 
 <br />
 
