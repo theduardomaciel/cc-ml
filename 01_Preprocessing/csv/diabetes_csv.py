@@ -13,8 +13,10 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 import requests
 
+input_file = "./versions/diabetes_dataset_clean4.csv"
+
 print("\n - Lendo o arquivo com o dataset sobre diabetes")
-data = pd.read_csv("diabetes_dataset_clean1.csv")
+data = pd.read_csv(input_file)
 
 # Criando X e Y para o algoritmo de aprendizagem de máquina
 print(
@@ -36,14 +38,14 @@ feature_cols = [
 X = data[feature_cols]
 y = data.Outcome
 
-# Ciando o modelo preditivo para a base trabalhada
+# Criando o modelo preditivo para a base trabalhada
 print(" - Criando modelo preditivo")
 neigh = KNeighborsClassifier(n_neighbors=3)
 neigh.fit(X, y)
 
-# realizando previsões com o arquivo de
+# Realizando previsões com o arquivo de
 print(" - Aplicando modelo e enviando para o servidor")
-data_app = pd.read_csv("diabetes_dataset_clean1.csv")
+data_app = pd.read_csv(input_file)
 data_app = data_app[feature_cols]
 y_pred = neigh.predict(data_app)
 

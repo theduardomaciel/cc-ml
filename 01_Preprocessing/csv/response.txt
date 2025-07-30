@@ -1,1 +1,1 @@
-{"status":"success","dev_key":"nebulosa","accuracy":0.5714285714285714,"old_accuracy":0.56122448979592}
+{"error":{"code":102,"message":"Espere ao menos 10 minutos entre dois envios, tempo restante 00 dias 00 horas 13 minutos 08 segundos"}}
