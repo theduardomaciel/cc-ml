@@ -10,43 +10,43 @@ import pandas as pd
 import numpy as np
 
 # Caminho para o arquivo CSV de entrada
-input_csv = "../diabetes_dataset.csv"
+entrada_csv = "../diabetes_dataset.csv"
 
 # Caminho para o arquivo CSV de saída
-output_csv = "../versions/diabetes_dataset_clean2.csv"
+saida_csv = "../versions/clean2.csv"
 
 # Lê o CSV
-df = pd.read_csv(input_csv)
+df = pd.read_csv(entrada_csv)
 
 # Substitui 0 por NaN em colunas onde 0 não é fisiologicamente válido
 zero_as_nan = ["Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI"]
 df[zero_as_nan] = df[zero_as_nan].replace(0, pd.NA)
 
 # Remove linhas com valores faltantes em colunas com poucos NaNs
-columns_to_remove_rows = ["Glucose", "BloodPressure", "BMI"]
-df = df.dropna(subset=columns_to_remove_rows)
+colunas_para_remover_linhas = ["Glucose", "BloodPressure", "BMI"]
+df = df.dropna(subset=colunas_para_remover_linhas)
 
 
 # Gera valores aleatórios realistas para colunas com muitos dados faltantes
-def fill_with_realistic_random(df, column):
-    mean = df[column].dropna().mean()
-    std = df[column].dropna().std()
-    n_missing = df[column].isna().sum()
+def preencher_com_aleatorio_realista(df, coluna):
+    media = df[coluna].dropna().mean()
+    desvio = df[coluna].dropna().std()
+    n_faltantes = df[coluna].isna().sum()
 
     # Gera valores aleatórios com distribuição semelhante
-    random_values = np.random.normal(loc=mean, scale=std, size=n_missing)
+    valores_aleatorios = np.random.normal(loc=media, scale=desvio, size=n_faltantes)
 
     # Garante que os valores sejam positivos (biologicamente válidos)
-    random_values = np.clip(random_values, a_min=0, a_max=None)
+    valores_aleatorios = np.clip(valores_aleatorios, a_min=0, a_max=None)
 
-    df.loc[df[column].isna(), column] = random_values
+    df.loc[df[coluna].isna(), coluna] = valores_aleatorios
 
 
 # Aplica para colunas com muitos NaNs
-fill_with_realistic_random(df, "SkinThickness")
-fill_with_realistic_random(df, "Insulin")
+preencher_com_aleatorio_realista(df, "SkinThickness")
+preencher_com_aleatorio_realista(df, "Insulin")
 
 # Salva o novo CSV
-df.to_csv(output_csv, index=False)
+df.to_csv(saida_csv, index=False)
 
-print(f"Arquivo limpo e preenchido salvo como: {output_csv}")
+print(f"Arquivo limpo e preenchido salvo como: {saida_csv}")

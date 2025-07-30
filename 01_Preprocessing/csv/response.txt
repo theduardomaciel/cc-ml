@@ -1,1 +1,1 @@
-{"error":{"code":102,"message":"Espere ao menos 10 minutos entre dois envios, tempo restante 00 dias 00 horas 13 minutos 08 segundos"}}
+{"status":"success","dev_key":"nebulosa","accuracy":0.576530612244898,"old_accuracy":0.59183673469388}

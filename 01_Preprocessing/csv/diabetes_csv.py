@@ -13,7 +13,7 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 import requests
 
-input_file = "./versions/diabetes_dataset_clean4.csv"
+input_file = "./versions/clean5.csv"
 
 print("\n - Lendo o arquivo com o dataset sobre diabetes")
 data = pd.read_csv(input_file)

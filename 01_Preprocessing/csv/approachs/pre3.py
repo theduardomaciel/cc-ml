@@ -12,7 +12,7 @@ import pandas as pd
 entrada_csv = "../diabetes_dataset.csv"
 
 # Caminho para o arquivo CSV de saída
-saida_csv = "../versions/diabetes_dataset_clean3.csv"
+saida_csv = "../versions/clean3_1.csv"
 
 # Lê o CSV
 df = pd.read_csv(entrada_csv)
@@ -22,7 +22,9 @@ zero_as_nan = ["Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI"]
 df[zero_as_nan] = df[zero_as_nan].replace(0, pd.NA)
 
 # Preenche os valores ausentes com a mediana de cada coluna
-df_preenchido = df.fillna(df.median(numeric_only=True))
+df_preenchido = df.fillna(
+    df.median(numeric_only=True)
+)  # Substituir por df.mean() para fazer a média
 
 # Salva o novo CSV
 df_preenchido.to_csv(saida_csv, index=False)

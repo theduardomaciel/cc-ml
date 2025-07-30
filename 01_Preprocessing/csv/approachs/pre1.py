@@ -11,7 +11,7 @@ import pandas as pd
 input_csv = "../diabetes_dataset.csv"
 
 # Caminho para o arquivo CSV de saída
-output_csv = "../versions/diabetes_dataset_clean1.csv"
+output_csv = "../versions/clean1.csv"
 
 # Lê o CSV
 df = pd.read_csv(input_csv)
