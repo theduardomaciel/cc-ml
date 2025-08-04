@@ -22,7 +22,7 @@ df = pd.read_csv(entrada_csv)
 zero_as_nan = ["Glucose", "BloodPressure", "SkinThickness", "Insulin", "BMI"]
 df[zero_as_nan] = df[zero_as_nan].replace(0, pd.NA)
 
-# Remove linhas com valores faltantes em colunas com poucos NaNs
+# Remove linhas com valores faltantes em colunas com valores críticos
 colunas_para_remover_linhas = ["Glucose", "BloodPressure", "BMI"]
 df = df.dropna(subset=colunas_para_remover_linhas)
 

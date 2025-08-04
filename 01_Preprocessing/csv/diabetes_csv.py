@@ -13,7 +13,8 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
 import requests
 
-input_file = "./versions/clean5.csv"
+input_file = "./versions/clean8.csv"
+data_file = "./diabetes_app.csv"
 
 print("\n - Lendo o arquivo com o dataset sobre diabetes")
 data = pd.read_csv(input_file)
@@ -45,9 +46,12 @@ neigh.fit(X, y)
 
 # Realizando previsões com o arquivo de
 print(" - Aplicando modelo e enviando para o servidor")
-data_app = pd.read_csv(input_file)
+data_app = pd.read_csv(data_file)
 data_app = data_app[feature_cols]
 y_pred = neigh.predict(data_app)
+
+print(" - Previsões realizadas com o modelo:", y_pred)
+print(" - Acurácia do modelo:", neigh.score(X, y))
 
 # Enviando previsões realizadas com o modelo para o servidor
 URL = "https://aydanomachado.com/mlclass/01_Preprocessing.php"
