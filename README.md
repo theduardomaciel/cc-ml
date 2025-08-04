@@ -1,4 +1,4 @@
-# Aprendizagem de Máquina
+# Aprendizagem de Máquina - Equipe Nebulosa
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./.github/cover.png">
@@ -15,7 +15,10 @@ A disciplina tem como objetivo apresentar os principais paradigmas de aprendizag
 
 Se você está cursando a disciplina, nós encorajamos todas as atividades que fortaleçam o seu aprendizado. Tais como, formar grupos de estudo e discutir os assuntos ministrados e exercícios/atividades etc. No entanto, as respostas e soluções que você envia devem ser o seu próprio trabalho. Para os exercícios de programação, você pode discutir com outros alunos, discutir algoritmos específicos, propriedades de algoritmos, etc., pedimos apenas que você não olhe para nenhum código-fonte escrito por outra pessoa, nem passe sua solução para outro aluno.
 
-Para tudo que nos é enviado, assumimos que você está seguindo o código de honra a seguir.
+## Integrantes
+
+- [Eduardo Maciel](https://github.com/theduardomaciel)
+- [Josenilton Ferreira](https://github.com/914joseph)
 
 ## Código de Honra
 
