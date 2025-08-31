@@ -1,0 +1,30 @@
+{
+  "best_params": {
+    "model__metric": "minkowski",
+    "model__n_neighbors": 19,
+    "model__p": 1,
+    "model__weights": "distance"
+  },
+  "best_score": 0.646768143369759,
+  "target_col": "type",
+  "feature_cols": [
+    "sex",
+    "length",
+    "diameter",
+    "height",
+    "whole_weight",
+    "shucked_weight",
+    "viscera_weight",
+    "shell_weight"
+  ],
+  "cv": {
+    "splits": 10,
+    "repeats": 3,
+    "random_state": 42
+  },
+  "search_space": {
+    "min_k": 1,
+    "max_k": 75,
+    "step": 2
+  }
+}

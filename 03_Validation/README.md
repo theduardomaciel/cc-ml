@@ -42,3 +42,62 @@ A base consiste de informações de um molusco chamado Abalone, e o objetivo do 
 7. **Viscera weight**: peso em gramas das vísceras após escorrer
 8. **Shell weight**: peso em gramas para a concha após estar seca
 9. **Type**: variável de classe (1, 2 ou 3) para o abalone
+
+## Como usar (CSV)
+
+Na pasta `03_Validation/csv`, há um script `abalone_validation_csv.py` que:
+
+- Lê `abalone_dataset.csv` e `abalone_app.csv`;
+- Monta um Pipeline com imputação (faltantes), normalização e one-hot para categóricos;
+- Faz busca em grade para k no k-NN com validação cruzada estratificada repetida;
+- Salva resultados completos em `knn_grid_results.csv` e previsões em `predictions.csv`/`predictions.json`;
+- Opcionalmente envia o melhor resultado ao servidor.
+
+Passos:
+
+1. Instale dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Execute a validação (exemplo com busca ampla):
+
+```bash
+python csv/abalone_validation_csv.py --min-k 1 --max-k 75 --step 2 --cv-splits 10 --cv-repeats 3
+```
+
+3. Envie as previsões do melhor modelo (opcional):
+
+```bash
+python csv/abalone_validation_csv.py --send --dev-key SUA_CHAVE_AQUI
+```
+
+Parâmetros úteis:
+
+- `--dataset` e `--app` para caminhos customizados;
+- `--min-k`, `--max-k`, `--step` para o espaço de busca;
+- `--cv-splits`, `--cv-repeats`, `--random-state` para controle da validação;
+- `--send` e `--dev-key` para envio ao servidor.
+
+Observação (Windows): se ocorrer erro de multiprocessing, rode com `--n-jobs 1`.
+
+Workflow recomendado para envio posterior:
+
+1) Rode a busca e salve a melhor config (gera `best_params.json`):
+
+```bash
+python csv/abalone_validation_csv.py --min-k 1 --max-k 75 --step 2 --cv-splits 10 --cv-repeats 3 --n-jobs 1
+```
+
+2) Em outro momento, apenas gere as predições com a melhor config salva (pula a busca):
+
+```bash
+python csv/abalone_validation_csv.py --use-best --n-jobs 1
+```
+
+3) Opcionalmente, envie ao servidor:
+
+```bash
+python csv/abalone_validation_csv.py --use-best --send --dev-key SUA_CHAVE_AQUI --n-jobs 1
+```
