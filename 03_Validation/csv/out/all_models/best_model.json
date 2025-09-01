@@ -1,0 +1,11 @@
+{
+  "model": "mlp",
+  "best_params": {
+    "model__activation": "tanh",
+    "model__alpha": 0.0001,
+    "model__hidden_layer_sizes": [
+      32
+    ]
+  },
+  "best_score": 0.6727325451252519
+}

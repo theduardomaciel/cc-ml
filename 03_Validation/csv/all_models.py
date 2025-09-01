@@ -93,8 +93,8 @@ def build_pipeline(model, num_cols, cat_cols):
                         (
                             "imputer",
                             SimpleImputer(strategy="median"),
-                        ),  # Usar mediana para preencher valores ausentes
-                        ("scaler", StandardScaler()),  # Padronização
+                        ),
+                        ("scaler", StandardScaler()),
                     ]
                 ),
                 num_cols,
@@ -106,11 +106,11 @@ def build_pipeline(model, num_cols, cat_cols):
                         (
                             "imputer",
                             SimpleImputer(strategy="most_frequent"),
-                        ),  # Preencher com a moda
+                        ),
                         (
                             "onehot",
                             OneHotEncoder(handle_unknown="ignore"),
-                        ),  # One-Hot Encoding
+                        ),
                     ]
                 ),
                 cat_cols,
@@ -281,20 +281,33 @@ def main():
             }
         )
 
-    # Tabela resumo
+        # Tabela resumo
     summary_df = pd.DataFrame(summary).sort_values("best_score", ascending=False)
     summary_df.to_csv(OUT_DIR / "summary_models.csv", index=False)
     print("\nTabela comparativa de acurácias salva em summary_models.csv")
     print(summary_df)
 
-    # Previsões no conjunto app com melhor modelo
+    # Melhor modelo
     best_model_name = summary_df.iloc[0]["model"]
+    best_params = summary_df.iloc[0]["best_params"]
+    best_score = summary_df.iloc[0]["best_score"]
+
+    # Salvar best_model.json
+    best_payload = {
+        "model": best_model_name,
+        "best_params": best_params,
+        "best_score": best_score,
+    }
+    (OUT_DIR / "best_model.json").write_text(json.dumps(best_payload, indent=2))
+    print(f"\nMelhor modelo salvo em {OUT_DIR / 'best_model.json'}")
+
+    # Previsões no conjunto app com melhor modelo
     print(
         f"\nUsando melhor modelo ({best_model_name}) para gerar previsões no conjunto app..."
     )
     best_model, _ = get_model_grid(best_model_name)
     best_pipe = build_pipeline(best_model, num_cols, cat_cols)
-    best_pipe.set_params(**summary_df.iloc[0]["best_params"])
+    best_pipe.set_params(**best_params)
     best_pipe.fit(X, y)
 
     df_app = pd.read_csv(args.app)
@@ -307,6 +320,7 @@ def main():
     (OUT_DIR / f"{best_model_name}_predictions.json").write_text(
         json.dumps(to_list_of_py(y_pred))
     )
+
     print("Previsões salvas para o melhor modelo.")
 
     # Envio opcional
