@@ -1,0 +1,9 @@
+model,best_score,best_params
+mlp,0.6727325451252519,"{'model__activation': 'tanh', 'model__alpha': 0.0001, 'model__hidden_layer_sizes': (32,)}"
+svm,0.663683753552702,"{'model__C': 1, 'model__gamma': 'scale', 'model__kernel': 'rbf'}"
+logistic_regression,0.6550680694328563,{'model__C': 10}
+gradient_boosting,0.6540007325858244,"{'model__learning_rate': 0.05, 'model__max_depth': 5, 'model__n_estimators': 50}"
+random_forest,0.6528262211459543,"{'model__max_depth': 5, 'model__max_features': 'sqrt', 'model__n_estimators': 50}"
+decision_tree,0.6293112336609621,"{'model__max_depth': 5, 'model__min_samples_split': 10}"
+knn,0.6265450438534014,"{'model__n_neighbors': 7, 'model__p': 1, 'model__weights': 'distance'}"
+naive_bayes,0.571309768489313,{}
