@@ -39,6 +39,20 @@ SERVER_URL = "https://aydanomachado.com/mlclass/03_Validation.php"
 
 
 def infer_columns(df: pd.DataFrame, target_hint="Type"):
+    """
+    Infere e retorna as colunas alvo, de características, numéricas e categóricas de um DataFrame.
+
+    Parâmetros:
+        df (pd.DataFrame): DataFrame de entrada contendo os dados.
+        target_hint (str, opcional): Nome sugerido para a coluna alvo. Padrão é "Type".
+
+    Retorna:
+        tuple:
+            - target_col (str): Nome da coluna alvo.
+            - feature_cols (list): Lista com os nomes das colunas de características (exceto a alvo).
+            - num_cols (list): Lista com os nomes das colunas numéricas.
+            - cat_cols (list): Lista com os nomes das colunas categóricas.
+    """
     if target_hint in df.columns:
         target_col = target_hint
     else:
@@ -54,14 +68,33 @@ def infer_columns(df: pd.DataFrame, target_hint="Type"):
 
 
 def build_pipeline(model, num_cols, cat_cols):
+    """
+    Cria um pipeline de pré-processamento e modelagem para dados tabulares.
+
+    Parâmetros:
+        model: objeto
+            O estimador ou modelo de machine learning a ser utilizado no pipeline.
+        num_cols: lista de str
+            Lista com os nomes das colunas numéricas do conjunto de dados.
+        cat_cols: lista de str
+            Lista com os nomes das colunas categóricas do conjunto de dados.
+
+    Retorna:
+        pipe: sklearn.pipeline.Pipeline
+            Um pipeline contendo o pré-processamento das variáveis numéricas e categóricas,
+            seguido pelo modelo especificado.
+    """
     preprocess = ColumnTransformer(
         transformers=[
             (
                 "num",
                 Pipeline(
                     [
-                        ("imputer", SimpleImputer(strategy="median")),
-                        ("scaler", StandardScaler()),
+                        (
+                            "imputer",
+                            SimpleImputer(strategy="median"),
+                        ),  # Usar mediana para preencher valores ausentes
+                        ("scaler", StandardScaler()),  # Padronização
                     ]
                 ),
                 num_cols,
@@ -70,8 +103,14 @@ def build_pipeline(model, num_cols, cat_cols):
                 "cat",
                 Pipeline(
                     [
-                        ("imputer", SimpleImputer(strategy="most_frequent")),
-                        ("onehot", OneHotEncoder(handle_unknown="ignore")),
+                        (
+                            "imputer",
+                            SimpleImputer(strategy="most_frequent"),
+                        ),  # Preencher com a moda
+                        (
+                            "onehot",
+                            OneHotEncoder(handle_unknown="ignore"),
+                        ),  # One-Hot Encoding
                     ]
                 ),
                 cat_cols,
@@ -83,6 +122,28 @@ def build_pipeline(model, num_cols, cat_cols):
 
 
 def get_model_grid(model_name):
+    """
+    Retorna o estimador e o grid de hiper-parâmetros para busca em grade, de acordo com o nome do modelo especificado.
+
+    Parâmetros:
+        model_name (str): Nome do modelo desejado. Opções válidas incluem:
+            - "knn"
+            - "decision_tree"
+            - "random_forest"
+            - "gradient_boosting"
+            - "svm"
+            - "mlp"
+            - "naive_bayes"
+            - "logistic_regression"
+
+    Retorna:
+        tuple:
+            - Um estimador sklearn correspondente ao modelo solicitado.
+            - Um dicionário contendo os hiper-parâmetros e seus valores para busca em grade.
+
+    Exceções:
+        ValueError: Se o nome do modelo fornecido não for reconhecido.
+    """
     if model_name == "knn":
         return KNeighborsClassifier(), {
             "model__n_neighbors": [3, 5, 7],
@@ -129,6 +190,20 @@ def get_model_grid(model_name):
 
 
 def to_list_of_py(obj):
+    """
+    Converte um objeto em uma lista de valores Python.
+
+    Se o objeto for uma tupla, utiliza apenas o primeiro elemento.
+    Em seguida, converte o objeto para um array NumPy unidimensional.
+    Se o tipo dos dados for inteiro (signed ou unsigned), retorna uma lista de inteiros.
+    Caso contrário, retorna uma lista de strings.
+
+    Parâmetros:
+        obj: Objeto a ser convertido (pode ser tupla, lista, array, etc).
+
+    Retorna:
+        list: Lista de inteiros ou strings, dependendo do tipo dos dados do objeto.
+    """
     if isinstance(obj, tuple):
         obj = obj[0]
     arr = np.asarray(obj).ravel()
