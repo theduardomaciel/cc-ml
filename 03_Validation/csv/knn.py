@@ -1,12 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Atividade 03 - Avaliação de classificadores (versão CSV)
+Atividade 03 - Avaliação de classificadores (com k-NN)
 
 Validação intensiva de k para k-NN no dataset Abalone, com pré-processamento
 por Pipeline (One-Hot para categóricos, padronização para numéricos),
 validação cruzada repetida e envio opcional do melhor modelo ao servidor.
 """
+
 import argparse
 import json
 import os
@@ -15,6 +14,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import requests
+
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold
 from sklearn.neighbors import KNeighborsClassifier
@@ -25,7 +25,8 @@ from sklearn.impute import SimpleImputer
 # Caminhos padrão (relativos a esta pasta)
 DATASET_PATH = Path(__file__).parent / "abalone_dataset.csv"
 APP_PATH = Path(__file__).parent / "abalone_app.csv"
-OUT_DIR = Path(__file__).parent
+OUT_DIR = Path(__file__).parent / "out" / "knn"
+OUT_DIR.mkdir(exist_ok=True)
 
 SERVER_URL = "https://aydanomachado.com/mlclass/03_Validation.php"
 
