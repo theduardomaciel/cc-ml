@@ -281,7 +281,16 @@ def main():
             }
         )
 
-        # Tabela resumo
+        # Salva best_model de cada modelo individualmente
+        best_payload_model = {
+            "model": m,
+            "best_params": search.best_params_,
+            "best_score": search.best_score_,
+        }
+        (OUT_DIR / f"best_model_{m}.json").write_text(
+            json.dumps(best_payload_model, indent=2)
+        )
+        print(f"Best model salvo em {OUT_DIR / f'best_model_{m}.json'}")
     summary_df = pd.DataFrame(summary).sort_values("best_score", ascending=False)
     summary_df.to_csv(OUT_DIR / "summary_models.csv", index=False)
     print("\nTabela comparativa de acurácias salva em summary_models.csv")
