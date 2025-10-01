@@ -29,6 +29,7 @@ class KMeansClusterer:
         self.kmeans = None
         self.scaler = StandardScaler()
         self.data = None
+        self.features_data = None
         self.scaled_data = None
         self.labels = None
 
@@ -48,6 +49,10 @@ class KMeansClusterer:
         """
         Preprocessa os dados: seleciona apenas as variáveis de interesse e normaliza
         """
+        if self.data is None:
+            raise ValueError(
+                "Os dados ainda não foram carregados. Use load_data primeiro."
+            )
         # Seleciona apenas as variáveis de interesse (excluindo ID e Correto)
         features = ["AL", "ACD", "WTW", "K1", "K2"]
         self.features_data = self.data[features].copy()
@@ -68,6 +73,10 @@ class KMeansClusterer:
         Returns:
             dict: Dicionário com as métricas para cada número de clusters
         """
+        if self.scaled_data is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
+            )
         metrics = {
             "n_clusters": [],
             "inertia": [],
@@ -96,6 +105,10 @@ class KMeansClusterer:
         """
         Treina o modelo K-Means
         """
+        if self.scaled_data is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
+            )
         self.kmeans = KMeans(
             n_clusters=self.n_clusters, random_state=self.random_state, n_init=10
         )
@@ -110,6 +123,8 @@ class KMeansClusterer:
         Returns:
             dict: Métricas de avaliação
         """
+        if self.scaled_data is None or self.labels is None or self.kmeans is None:
+            raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
         metrics = {
             "silhouette_score": silhouette_score(self.scaled_data, self.labels),
             "calinski_harabasz_score": calinski_harabasz_score(
@@ -128,6 +143,10 @@ class KMeansClusterer:
         Returns:
             pd.DataFrame: DataFrame com estatísticas de cada cluster
         """
+        if self.features_data is None or self.labels is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados ou o modelo não foi treinado."
+            )
         # Adiciona os labels aos dados originais
         data_with_clusters = self.features_data.copy()
         data_with_clusters["Cluster"] = self.labels
@@ -161,6 +180,10 @@ class KMeansClusterer:
             feature_y (str): Característica para o eixo Y
             save_path (str): Caminho para salvar o gráfico
         """
+        if self.features_data is None or self.labels is None or self.kmeans is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados ou o modelo não foi treinado."
+            )
         plt.figure(figsize=(10, 8))
 
         # Plota os pontos coloridos por cluster
@@ -205,6 +228,10 @@ class KMeansClusterer:
         Args:
             output_path (str): Caminho para salvar os resultados
         """
+        if self.data is None or self.labels is None:
+            raise ValueError(
+                "Os dados ainda não foram carregados ou o modelo não foi treinado."
+            )
         results = self.data.copy()
         results["KMeans_Cluster"] = self.labels
         results.to_csv(output_path, index=False)
