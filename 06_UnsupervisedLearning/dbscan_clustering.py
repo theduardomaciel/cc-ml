@@ -30,6 +30,7 @@ class DBSCANClusterer:
         self.dbscan = None
         self.scaler = StandardScaler()
         self.data = None
+        self.features_data = None
         self.scaled_data = None
         self.labels = None
 
@@ -49,6 +50,10 @@ class DBSCANClusterer:
         """
         Preprocessa os dados: seleciona apenas as variáveis de interesse e normaliza
         """
+        if self.data is None:
+            raise ValueError(
+                "Os dados ainda não foram carregados. Use load_data primeiro."
+            )
         # Seleciona apenas as variáveis de interesse (excluindo ID e Correto)
         features = ["AL", "ACD", "WTW", "K1", "K2"]
         self.features_data = self.data[features].copy()
@@ -69,6 +74,10 @@ class DBSCANClusterer:
         Returns:
             float: Valor sugerido para eps
         """
+        if self.scaled_data is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
+            )
         # Calcula as k-distâncias
         neighbors = NearestNeighbors(n_neighbors=k)
         neighbors_fit = neighbors.fit(self.scaled_data)
@@ -105,6 +114,10 @@ class DBSCANClusterer:
         Returns:
             pd.DataFrame: DataFrame com resultados dos testes
         """
+        if self.scaled_data is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
+            )
         if eps_range is None:
             eps_range = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
         if min_samples_range is None:
@@ -132,7 +145,7 @@ class DBSCANClusterer:
                 if n_clusters > 1:
                     # Remove pontos de ruído para calcular métricas
                     mask = labels != -1
-                    if mask.sum() > 0:
+                    if np.sum(mask) > 0:
                         try:
                             result["silhouette"] = silhouette_score(
                                 self.scaled_data[mask], labels[mask]
@@ -143,7 +156,7 @@ class DBSCANClusterer:
                             result["davies_bouldin"] = davies_bouldin_score(
                                 self.scaled_data[mask], labels[mask]
                             )
-                        except:
+                        except Exception:
                             result["silhouette"] = np.nan
                             result["calinski_harabasz"] = np.nan
                             result["davies_bouldin"] = np.nan
@@ -160,6 +173,10 @@ class DBSCANClusterer:
         """
         Treina o modelo DBSCAN
         """
+        if self.scaled_data is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
+            )
         self.dbscan = DBSCAN(eps=self.eps, min_samples=self.min_samples)
         self.labels = self.dbscan.fit_predict(self.scaled_data)
 
@@ -179,6 +196,8 @@ class DBSCANClusterer:
         Returns:
             dict: Métricas de avaliação
         """
+        if self.labels is None or self.scaled_data is None:
+            raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
         n_clusters = len(set(self.labels)) - (1 if -1 in self.labels else 0)
         n_noise = list(self.labels).count(-1)
 
@@ -191,7 +210,7 @@ class DBSCANClusterer:
         # Calcula métricas apenas se houver mais de 1 cluster e pontos não-ruído
         if n_clusters > 1:
             mask = self.labels != -1
-            if mask.sum() > 0:
+            if np.sum(mask) > 0:
                 try:
                     metrics["silhouette_score"] = silhouette_score(
                         self.scaled_data[mask], self.labels[mask]
@@ -202,7 +221,7 @@ class DBSCANClusterer:
                     metrics["davies_bouldin_score"] = davies_bouldin_score(
                         self.scaled_data[mask], self.labels[mask]
                     )
-                except:
+                except Exception:
                     metrics["silhouette_score"] = np.nan
                     metrics["calinski_harabasz_score"] = np.nan
                     metrics["davies_bouldin_score"] = np.nan
@@ -220,6 +239,10 @@ class DBSCANClusterer:
         Returns:
             pd.DataFrame: DataFrame com estatísticas de cada cluster
         """
+        if self.features_data is None or self.labels is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados ou o modelo não foi treinado."
+            )
         # Adiciona os labels aos dados originais
         data_with_clusters = self.features_data.copy()
         data_with_clusters["Cluster"] = self.labels
@@ -261,6 +284,10 @@ class DBSCANClusterer:
             feature_y (str): Característica para o eixo Y
             save_path (str): Caminho para salvar o gráfico
         """
+        if self.features_data is None or self.labels is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados ou o modelo não foi treinado."
+            )
         plt.figure(figsize=(10, 8))
 
         # Separa pontos de cluster e ruído
@@ -268,10 +295,12 @@ class DBSCANClusterer:
         mask_noise = self.labels == -1
 
         # Plota os clusters
-        if mask_clusters.sum() > 0:
+        if np.sum(mask_clusters) > 0:
+            x_vals = np.asarray(self.features_data.loc[mask_clusters, feature_x])
+            y_vals = np.asarray(self.features_data.loc[mask_clusters, feature_y])
             scatter = plt.scatter(
-                self.features_data.loc[mask_clusters, feature_x],
-                self.features_data.loc[mask_clusters, feature_y],
+                x_vals,
+                y_vals,
                 c=self.labels[mask_clusters],
                 cmap="viridis",
                 alpha=0.7,
@@ -280,10 +309,12 @@ class DBSCANClusterer:
             plt.colorbar(scatter, label="Cluster")
 
         # Plota os pontos de ruído
-        if mask_noise.sum() > 0:
+        if np.sum(mask_noise) > 0:
+            x_vals_noise = np.asarray(self.features_data.loc[mask_noise, feature_x])
+            y_vals_noise = np.asarray(self.features_data.loc[mask_noise, feature_y])
             plt.scatter(
-                self.features_data.loc[mask_noise, feature_x],
-                self.features_data.loc[mask_noise, feature_y],
+                x_vals_noise,
+                y_vals_noise,
                 c="red",
                 marker="x",
                 alpha=0.7,
@@ -308,6 +339,10 @@ class DBSCANClusterer:
         Args:
             output_path (str): Caminho para salvar os resultados
         """
+        if self.data is None or self.labels is None:
+            raise ValueError(
+                "Os dados ainda não foram carregados ou o modelo não foi treinado."
+            )
         results = self.data.copy()
         results["DBSCAN_Cluster"] = self.labels
         results.to_csv(output_path, index=False)
