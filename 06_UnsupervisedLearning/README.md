@@ -14,7 +14,7 @@ A atividade será **apresentar o perfil dos grupos encontrados**, assim foquem e
 > [!IMPORTANT]   
 > A atividade consiste nos grupos encontrados baseados **somente** nas variáveis acima. 
 
-Somente depois dos grupos definidos é que vocês, se quiserem complementar a apresentação, podem acrescentar a frequência da coluna para cada grupo. 
+Somente depois dos grupos definidos é que vocês, se quiserem complementar a apresentação, podem acrescentar a frequência da coluna "correto" para cada grupo. 
 
 Esse **é só um complemento** para a descrição dos grupos no momento da apresentação e **NÃO uma variável a ser considerada para se identificar o padrão de olhos presentes na base**. 
 

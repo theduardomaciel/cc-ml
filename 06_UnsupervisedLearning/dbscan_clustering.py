@@ -288,6 +288,7 @@ class DBSCANClusterer:
             raise ValueError(
                 "Os dados ainda não foram preprocessados ou o modelo não foi treinado."
             )
+
         plt.figure(figsize=(10, 8))
 
         # Separa pontos de cluster e ruído
@@ -317,7 +318,7 @@ class DBSCANClusterer:
                 y_vals_noise,
                 c="red",
                 marker="x",
-                alpha=0.7,
+                alpha=0.25,
                 label="Ruído",
             )
 
@@ -352,8 +353,8 @@ class DBSCANClusterer:
 def main():
     # Configurações
     data_path = Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
-    eps = 0.5  # Configurável
-    min_samples = 5  # Configurável
+    eps = 0.5
+    min_samples = 5
 
     # Inicializa o clusterer
     clusterer = DBSCANClusterer(eps=eps, min_samples=min_samples)
