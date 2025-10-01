@@ -241,7 +241,7 @@ class KMeansClusterer:
 def main():
     # Configurações
     data_path = Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
-    n_clusters = 3
+    n_clusters = 4
 
     # Inicializa o clusterer
     clusterer = KMeansClusterer(n_clusters=n_clusters)

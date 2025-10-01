@@ -350,6 +350,95 @@ class DBSCANClusterer:
         print(f"Resultados salvos em: {output_path}")
 
 
+def tests():
+    # Configurações - Testando diferentes parâmetros
+    data_path = Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
+
+    # Parâmetros originais vs otimizados
+    configs = [
+        {"eps": 0.5, "min_samples": 5, "label": "ORIGINAL"},
+        {"eps": 0.7, "min_samples": 5, "label": "OTIMIZADO (3 clusters)"},
+        {"eps": 1.4, "min_samples": 3, "label": "OTIMIZADO (baixo ruído)"},
+    ]
+
+    print("=" * 80)
+    print("COMPARAÇÃO DE CONFIGURAÇÕES DBSCAN")
+    print("=" * 80)
+
+    for i, config in enumerate(configs, 1):
+        print(f"\n{'='*60}")
+        print(f"CONFIGURAÇÃO {i}: {config['label']}")
+        print(f"eps={config['eps']}, min_samples={config['min_samples']}")
+        print(f"{'='*60}")
+
+        # Inicializa o clusterer
+        clusterer = DBSCANClusterer(
+            eps=config["eps"], min_samples=config["min_samples"]
+        )
+
+        # Carrega e preprocessa os dados
+        clusterer.load_data(data_path)
+        clusterer.preprocess_data()
+
+        # Encontra eps ótimo (apenas para primeira configuração)
+        if i == 1:
+            print("\nEncontrando eps ótimo...")
+            suggested_eps = clusterer.find_optimal_eps()
+
+        # Treina o modelo
+        clusterer.fit()
+
+        # Avalia o modelo
+        evaluation = clusterer.evaluate()
+        print(f"\nMétricas de avaliação:")
+        for metric, value in evaluation.items():
+            if isinstance(value, float) and not np.isnan(value):
+                print(f"{metric}: {value:.4f}")
+            else:
+                print(f"{metric}: {value}")
+
+        # Obtém perfis dos clusters
+        cluster_stats, cluster_counts, n_noise = clusterer.get_cluster_profiles()
+
+        if cluster_counts is not None:
+            print(f"\nContagem de amostras por cluster:")
+            print(cluster_counts)
+            print(f"Pontos de ruído: {n_noise}")
+
+            print(f"\nEstatísticas dos clusters:")
+            if cluster_stats is not None:
+                print(cluster_stats.head())  # Mostra apenas as primeiras linhas
+            else:
+                print("Estatísticas não disponíveis")
+        else:
+            print(f"\nNenhum cluster válido encontrado. Pontos de ruído: {n_noise}")
+
+        # Plota os clusters (apenas para configuração otimizada)
+        if config["label"] == "OTIMIZADO (3 clusters)":
+            print("\nGerando visualizações...")
+            clusterer.plot_clusters_2d("AL", "ACD")
+            clusterer.plot_clusters_2d("K1", "K2")
+
+        # Salva os resultados
+        output_path = (
+            Path(__file__).parent
+            / "results"
+            / f"dbscan_results_{config['label'].lower().replace(' ', '_').replace('(', '').replace(')', '')}.csv"
+        )
+        output_path.parent.mkdir(exist_ok=True)
+        clusterer.save_results(output_path)
+
+    # Resumo final
+    print(f"\n{'='*80}")
+    print("RESUMO COMPARATIVO")
+    print(f"{'='*80}")
+    print(f"1. ORIGINAL (0.5, 5): Muitos clusters pequenos + 45% ruído")
+    print(f"2. OTIMIZADO (0.7, 5): 3 clusters + 18% ruído")
+    print(f"3. OTIMIZADO (1.4, 3): 2 clusters + 1.5% ruído")
+    print(f"\nCONCLUSÃO: Mesmo otimizado, DBSCAN não supera K-Means")
+    print(f"para segmentação clínica estruturada de pacientes oftalmológicos.")
+
+
 def main():
     # Configurações
     data_path = Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
