@@ -58,32 +58,10 @@ GRUPO 3: Emetrópicos (45.7% - 699 pacientes)
 • Protocolo: Prevenção + acompanhamento
 ```
 
-### 3. **Viabilidade Operacional**
-- **3 protocolos** distintos e gerenciáveis
-- **Treinamento simplificado** das equipes
-- **Implementação econômica** viável
-- **Escalabilidade** para múltiplas unidades
-
-### 4. **Estabilidade e Reprodutibilidade**
+### 3. **Estabilidade e Reprodutibilidade**
 - **Resultados determinísticos** (mesmo k sempre)
 - **Independente de parâmetros** sensíveis
 - **Comparabilidade** entre diferentes análises
-
----
-
-## 💼 IMPACTO NO NEGÓCIO
-
-### Com K-Means (Implementação Recomendada):
-- ✅ **Receita Potencial**: R$ 1.691.100 (100% da base)
-- ✅ **Protocolos Viáveis**: 3 perfis bem definidos
-- ✅ **ROI**: 300% em 12 meses
-- ✅ **Implementação**: 90 dias
-
-### Com DBSCAN (Não Recomendado):
-- ❌ **Receita Perdida**: R$ 308.700 (18% não classificados)
-- ❌ **Complexidade Operacional**: Grupos irregulares
-- ❌ **Custo de Implementação**: 40% maior
-- ❌ **Risco de Abandono**: Alta probabilidade
 
 ---
 
@@ -112,11 +90,6 @@ GRUPO 3: Emetrópicos (45.7% - 699 pacientes)
 - Cobertura total da população
 - Alinhamento com literatura oftalmológica
 
-**Justificativa Comercial:**
-- ROI máximo com 100% da base
-- Implementação prática e econômica
-- Escalabilidade comprovada
-
 **Justificativa Clínica:**
 - Todos os pacientes com protocolo definido
 - Grupos clinicamente interpretáveis
@@ -132,7 +105,3 @@ O DBSCAN, apesar de tecnicamente interessante, é **fundamentalmente inadequado*
 2. **Fragmenta a base de pacientes**
 3. **Compromete objetivos comerciais**
 4. **Dificulta implementação prática**
-
-O K-Means oferece a **solução ideal** porque equilibra rigor científico, viabilidade operacional e maximização do valor comercial.
-
-**Resultado: K-Means k=3 é a escolha definitiva para este projeto.**

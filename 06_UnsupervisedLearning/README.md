@@ -1,4 +1,10 @@
-# Atividade 3 - Aprendizado Não Supervisionado
+# Atividade 3 - Clusterização
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./.github/cover.png">
+  <source media="(prefers-color-scheme: light)" srcset="./.github/cover_light.png">
+  <img alt="Atividade 03 - Clusterização" src="/.github/cover_light.png">
+</picture>
 
 ## Sobre a atividade
 
