@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 import warnings
+import sys
+from pathlib import Path
+
+# Adicionar o diretório pai ao sys.path para permitir importação
+sys.path.append(str(Path(__file__).parent.parent))
 from kmeans_clustering import KMeansClusterer
 
 warnings.filterwarnings("ignore")
@@ -28,7 +33,9 @@ class ClientPresentation:
         Configura e processa os dados
         """
         # Configurações
-        data_path = Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
+        data_path = (
+            Path(__file__).parent.parent / "data" / "barrettII_eyes_clustering.csv"
+        )
         n_clusters = 3
 
         # Inicializa o clusterer
@@ -517,7 +524,7 @@ def main():
     presentation.generate_report()
 
     # Gerar visualizações
-    print("\nGerando visualizações profissionais...")
+    print("\nGerando visualizações...")
 
     # 1. Resumo executivo
     presentation.create_executive_summary(

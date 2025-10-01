@@ -3,9 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
-from dbscan_clustering import DBSCANClusterer
+import sys
 from sklearn.metrics import silhouette_score
 import warnings
+
+# Adicionar o diretório pai ao sys.path para permitir importação
+sys.path.append(str(Path(__file__).parent.parent))
+from dbscan_clustering import DBSCANClusterer
 
 warnings.filterwarnings("ignore")
 
@@ -16,7 +20,7 @@ class DBSCANOptimizer:
         Classe para otimizar parâmetros do DBSCAN
         """
         self.data_path = (
-            Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
+            Path(__file__).parent.parent / "data" / "barrettII_eyes_clustering.csv"
         )
         self.clusterer = None
 

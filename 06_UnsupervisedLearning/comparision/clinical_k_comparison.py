@@ -3,8 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
-from kmeans_clustering import KMeansClusterer
+import sys
 import warnings
+
+# Adicionar o diretório pai ao sys.path para permitir importação
+sys.path.append(str(Path(__file__).parent.parent))
+from kmeans_clustering import KMeansClusterer
 
 warnings.filterwarnings("ignore")
 
@@ -15,7 +19,7 @@ class ClinicalKComparison:
         Comparação clínica detalhada entre k=2 e k=3
         """
         self.data_path = (
-            Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
+            Path(__file__).parent.parent / "data" / "barrettII_eyes_clustering.csv"
         )
 
     def detailed_clinical_comparison(self):

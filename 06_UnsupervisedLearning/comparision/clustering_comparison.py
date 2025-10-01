@@ -3,12 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
+import sys
+
+# Adicionar o diretório pai ao sys.path para permitir importação
+sys.path.append(str(Path(__file__).parent.parent))
 from kmeans_clustering import KMeansClusterer
 from dbscan_clustering import DBSCANClusterer
-from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
-import warnings
-
-warnings.filterwarnings("ignore")
 
 
 class ClusteringComparison:
@@ -17,7 +17,7 @@ class ClusteringComparison:
         Classe para comparar diferentes algoritmos de clustering
         """
         self.data_path = (
-            Path(__file__).parent / "data" / "barrettII_eyes_clustering.csv"
+            Path(__file__).parent.parent / "data" / "barrettII_eyes_clustering.csv"
         )
         self.kmeans_clusterer = None
         self.dbscan_clusterer = None
