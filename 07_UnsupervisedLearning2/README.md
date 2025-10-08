@@ -11,7 +11,7 @@
 > [!NOTE]
 > Para visualizar a apresentação de slides para essa atividade, acesse: [Slides - Atividade 4](https://www.canva.com/design/DAG1OGDlzE0/tZ62jnWkS6GIClgfOXUfEA/view?utm_content=DAG1OGDlzE0&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hecf1284e35)
 
-Análise de **aprendizado não-supervisionado** para descobrir perfis/padrões de espessura epitelial em mapas oculares. O projeto compara três algoritmos de clustering (**K-Means**, **DBSCAN** e **K-Medoids**) para identificar grupos naturais de olhos com características similares de espessura do epitélio.
+Nessa atividade, realizamos uma análise, por meio do **aprendizado não-supervisionado**, para descobrir perfis/padrões de espessura epitelial em mapas oculares. No código, comparamos três algoritmos de clustering (**K-Means**, **DBSCAN** e **K-Medoids**) para identificar grupos naturais de olhos com características similares de espessura do epitélio.
 
 ### 🎯 Objetivo
 
