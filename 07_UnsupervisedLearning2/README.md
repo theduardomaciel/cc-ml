@@ -76,11 +76,25 @@ O script executa duas análises:
 1. **COM remoção de outliers** → `results_with_outlier_removal/`
 2. **SEM remoção de outliers** → `results_without_outlier_removal/`
 
+**Análise Demográfica e Clínica:**
+
+```bash
+python demographic_analysis.py
+```
+
+Explora variáveis demográficas (idade, gênero, lateralidade) em conjunto com os clusters:
+- 📊 **Distribuição etária** por cluster
+- 👥 **Análise de gênero** e associações estatísticas
+- 👁️ **Assimetrias** entre olho direito (OD) e esquerdo (OS)
+- 📈 **Correlações** entre demografia e perfis epiteliais
+- 📄 **Relatório estatístico** completo (ANOVA, Chi-Square, T-Test)
+
 **Importar Módulos (Para Scripts Customizados):**
 
 ```python
 from preprocessing import load_and_preprocess
 from clustering import run_clustering, optimize_kmeans, optimize_dbscan
+from demographic_analysis import analyze_demographics
 
 # Carregar e preprocessar dados
 df, scaled_data, features, scaler = load_and_preprocess(
@@ -93,6 +107,13 @@ results, df, scaled_data, features = run_clustering(
     'data/RTVue_20221110_MLClass.csv',
     output_dir='results',
     remove_outliers=True
+)
+
+# Análise demográfica
+df_analyzed, age_results, gender_results, eye_results = analyze_demographics(
+    'data/RTVue_20221110_MLClass.csv',
+    n_clusters=3,
+    output_dir='results_demographic'
 )
 ```
 
@@ -109,10 +130,17 @@ results, df, scaled_data, features = run_clustering(
 ├── results_without_outlier_removal/       # Resultados SEM remoção de outliers
 │   ├── clustering_results.csv             # Métricas comparativas
 │   └── clustering_comparison.png          # Visualização comparativa
-├── preprocessing.py                       # Módulo: Pré-processamento de dados
-├── clustering.py                          # Módulo: Algoritmos de clustering
-├── requirements.txt
-└── README.md
+├── results_demographic/                   # Análise demográfica
+│   ├── age_distribution.png               # Distribuição etária por cluster
+│   ├── gender_distribution.png            # Análise de gênero
+│   ├── eye_laterality.png                 # Assimetrias OD vs OS
+│   ├── integrated_analysis.png            # Visão integrada
+│   └── statistical_report.txt             # Relatório estatístico
+├── 🔧 preprocessing.py                    # Módulo: Pré-processamento de dados
+├── 🔧 clustering.py                       # Módulo: Algoritmos de clustering
+├── 🔧 demographic_analysis.py             # Módulo: Análise demográfica
+├── 📋 requirements.txt                    # Dependências
+└── 📖 README.md                           # Documentação
 ```
 
 ### 🎯 Módulos Principais
@@ -128,6 +156,13 @@ results, df, scaled_data, features = run_clustering(
   - DBSCAN com otimização de eps e min_samples
   - K-Medoids para comparação
   - Geração de visualizações comparativas
+
+- **`demographic_analysis.py`**: Análise demográfica
+  - Distribuição etária por cluster (ANOVA)
+  - Análise de gênero e associações (Chi-Square)
+  - Assimetrias entre olhos OD/OS (T-Test)
+  - Visualizações integradas
+  - Relatório estatístico completo
 
 ## 🔬 Metodologia
 

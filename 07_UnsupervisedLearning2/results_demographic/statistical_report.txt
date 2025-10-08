@@ -1,0 +1,66 @@
+================================================================================
+RELATÓRIO ESTATÍSTICO - ANÁLISE DEMOGRÁFICA
+================================================================================
+
+RESUMO GERAL
+--------------------------------------------------------------------------------
+Total de amostras: 4509
+Número de clusters: 3
+Idade média: 37.9 ± 18.0 anos
+Range de idade: 0 - 93 anos
+Gênero: 2327 F (51.6%), 2182 M (48.4%)
+Lateralidade: 2279 OD, 2230 OS
+
+ANÁLISE POR CLUSTER
+--------------------------------------------------------------------------------
+
+Cluster 0 (n=1333, 29.6%):
+  Idade: 40.8 ± 19.9 anos
+  Gênero: 817 F, 516 M
+  Lateralidade: 690 OD, 643 OS
+  Espessura média: 48.71 ± 2.98 μm
+
+Cluster 1 (n=2051, 45.5%):
+  Idade: 36.3 ± 17.1 anos
+  Gênero: 1004 F, 1047 M
+  Lateralidade: 1021 OD, 1030 OS
+  Espessura média: 53.21 ± 3.28 μm
+
+Cluster 2 (n=1125, 25.0%):
+  Idade: 37.4 ± 16.6 anos
+  Gênero: 506 F, 619 M
+  Lateralidade: 568 OD, 557 OS
+  Espessura média: 57.68 ± 3.32 μm
+
+TESTES ESTATÍSTICOS
+--------------------------------------------------------------------------------
+
+1. ANOVA - Idade entre clusters:
+   F-statistic: 26.3609
+   p-value: 0.0000
+   Resultado: Diferença significativa
+
+2. Chi-Square - Gênero vs Cluster:
+   χ²: 75.6348
+   p-value: 0.0000
+   Graus de liberdade: 2
+   Resultado: Associação significativa
+
+3. T-Test - OD vs OS:
+   t-statistic: -0.4226
+   p-value: 0.6726
+   Resultado: Sem diferença significativa
+
+ASSIMETRIAS ENTRE OLHOS (|OD - OS|)
+--------------------------------------------------------------------------------
+  C  : 0.231 μm
+  SN : 0.214 μm
+  IT : 0.146 μm
+  IN : 0.113 μm
+  I  : 0.108 μm
+  T  : 0.107 μm
+  ST : 0.103 μm
+  S  : 0.062 μm
+  N  : 0.020 μm
+
+================================================================================
