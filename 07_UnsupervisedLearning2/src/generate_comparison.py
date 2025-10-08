@@ -176,61 +176,6 @@ for idx, (name, dist) in enumerate(distributions.items()):
             )
         )
 
-# 4. Análise das causas do problema
-ax4 = fig.add_subplot(gs[2, :])
-ax4.axis("off")
-
-causas_texto = """
-🔍 POR QUE TODOS OS ALGORITMOS FALHARAM EM ENCONTRAR PERFIS BEM DEFINIDOS?
-
-1. 📊 OUTLIERS EXTREMOS (25% dos dados!)
-   • Valores absurdos: C=770, S=7318, N=2310 μm
-   • Forçam dados normais a se agruparem juntos
-
-2. 🎯 DADOS MUITO HOMOGÊNEOS
-   • 50% dos valores entre 49-56 μm (apenas 7 μm de diferença)
-   • População uniforme sem subgrupos naturais
-
-3. 🔗 BAIXA CORRELAÇÃO (média 0.07)
-   • Features independentes, sem padrões coerentes
-   • Não há "assinaturas" que definam grupos
-
-4. 📉 VARIÂNCIA DISTRIBUÍDA
-   • PCA: necessários 8 componentes para 90% da variância
-   • Nenhuma direção privilegiada de separação
-
-5. 📍 CONCENTRAÇÃO NO CENTRO
-   • 75% dos pontos muito próximos do centroide
-   • Sugere população homogênea
-
-✅ MELHOR RESULTADO: K-MEDOIDS
-   • Distribuição mais equilibrada (40%, 33%, 27%)
-   • MAS: Silhouette Score = 0.13 (muito baixo!)
-   • Diferenças entre medoides: apenas ~5-10 μm
-   • Clusters NÃO são bem separados
-
-❌ CONCLUSÃO: Os dados NÃO possuem estrutura natural de clusters distintos.
-              Isso não é falha dos algoritmos, mas característica dos dados.
-
-📋 RECOMENDAÇÕES:
-   1. Remover outliers antes de clustering
-   2. Investigar valores extremos (erros de medição?)
-   3. Adicionar features demográficas (idade, gênero, etc.)
-   4. Considerar análise supervisionada se houver labels clínicos
-   5. Segmentar por características antes de clustering
-"""
-
-ax4.text(
-    0.5,
-    0.5,
-    causas_texto,
-    fontsize=10,
-    verticalalignment="center",
-    horizontalalignment="center",
-    family="monospace",
-    bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.3),
-)
-
 # Salvar
 RESULTS_DIR.mkdir(exist_ok=True)
 plt.savefig(RESULTS_DIR / "comparative_analysis.png", dpi=300, bbox_inches="tight")
