@@ -13,10 +13,10 @@ import seaborn as sns
 from pathlib import Path
 import warnings
 import sys
+import io
 
 # Configurar encoding para UTF-8
-if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 warnings.filterwarnings("ignore")
 
@@ -111,14 +111,18 @@ class DBSCANEpithelialClusterer:
         plt.plot(distances)
         plt.xlabel("Pontos ordenados")
         plt.ylabel(f"{k}-distance")
-        plt.title(f"K-distance Graph (k={k})\nProcure pelo 'cotovelo' para determinar eps")
+        plt.title(
+            f"K-distance Graph (k={k})\nProcure pelo 'cotovelo' para determinar eps"
+        )
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
 
         # Salva a figura
-        results_dir = Path("results")
+        results_dir = Path(__file__).parent.parent / "results"
         results_dir.mkdir(exist_ok=True)
-        plt.savefig(results_dir / "dbscan_eps_optimization.png", dpi=300, bbox_inches="tight")
+        plt.savefig(
+            results_dir / "dbscan_eps_optimization.png", dpi=300, bbox_inches="tight"
+        )
         plt.close()
 
         # Sugestão de eps (90º percentil como heurística)
@@ -195,7 +199,11 @@ class DBSCANEpithelialClusterer:
 
                 results.append(result)
 
-                silhouette_str = f"{result['silhouette']:.3f}" if not np.isnan(result['silhouette']) else 'N/A'
+                silhouette_str = (
+                    f"{result['silhouette']:.3f}"
+                    if not np.isnan(result["silhouette"])
+                    else "N/A"
+                )
                 print(
                     f"  eps={eps:.2f}, min_samples={min_samples}: "
                     f"{n_clusters} clusters, {n_noise} ruídos ({noise_pct:.1f}%), "
@@ -213,7 +221,9 @@ class DBSCANEpithelialClusterer:
                 "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
             )
 
-        print(f"\n🎯 Treinando DBSCAN com eps={self.eps}, min_samples={self.min_samples}...")
+        print(
+            f"\n🎯 Treinando DBSCAN com eps={self.eps}, min_samples={self.min_samples}..."
+        )
         self.dbscan = DBSCAN(eps=self.eps, min_samples=self.min_samples)
         self.labels = self.dbscan.fit_predict(self.scaled_data)
 
@@ -231,9 +241,15 @@ class DBSCANEpithelialClusterer:
             mask = self.labels != -1
             if sum(mask) > 0:
                 try:
-                    silhouette = silhouette_score(self.scaled_data[mask], self.labels[mask])
-                    calinski = calinski_harabasz_score(self.scaled_data[mask], self.labels[mask])
-                    davies = davies_bouldin_score(self.scaled_data[mask], self.labels[mask])
+                    silhouette = silhouette_score(
+                        self.scaled_data[mask], self.labels[mask]
+                    )
+                    calinski = calinski_harabasz_score(
+                        self.scaled_data[mask], self.labels[mask]
+                    )
+                    davies = davies_bouldin_score(
+                        self.scaled_data[mask], self.labels[mask]
+                    )
 
                     print(f"\n📊 Métricas do modelo (sem ruído):")
                     print(f"  Silhouette Score: {silhouette:.4f}")
@@ -270,21 +286,30 @@ class DBSCANEpithelialClusterer:
         # Calcula estatísticas por cluster (excluindo ruído)
         data_no_noise = data_with_clusters[data_with_clusters["Cluster"] != -1]
         if len(data_no_noise) > 0:
-            cluster_stats = data_no_noise.groupby("Cluster").agg(["mean", "std", "min", "max"])
+            cluster_stats = data_no_noise.groupby("Cluster").agg(
+                ["mean", "std", "min", "max"]
+            )
         else:
             cluster_stats = None
 
         return cluster_stats, cluster_counts
 
-    def save_results(self, output_path="results/dbscan_results.csv"):
+    def save_results(self, output_path=None):
         """
         Salva os resultados em um arquivo CSV
 
         Args:
-            output_path (str): Caminho para salvar os resultados
+            output_path (str): Caminho para salvar os resultados (padrão: results/dbscan_results.csv)
         """
         if self.labels is None:
             raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
+
+        if output_path is None:
+            output_path = (
+                Path(__file__).parent.parent / "results" / "dbscan_results.csv"
+            )
+        else:
+            output_path = Path(output_path)
 
         # Combina features com labels
         results_df = self.features_data.copy()
@@ -309,8 +334,11 @@ class DBSCANEpithelialClusterer:
 
 if __name__ == "__main__":
     # Exemplo de uso
+    BASE_DIR = Path(__file__).parent.parent
+    DATA_PATH = BASE_DIR / "data" / "RTVue_20221110_MLClass.csv"
+
     clusterer = DBSCANEpithelialClusterer()
-    clusterer.load_data("data/RTVue_20221110_MLClass.csv")
+    clusterer.load_data(str(DATA_PATH))
     clusterer.preprocess_data()
 
     # Encontra eps ótimo
@@ -320,14 +348,17 @@ if __name__ == "__main__":
     optimization_results = clusterer.optimize_parameters()
     print("\n📊 Top 10 melhores configurações:")
     print(
-        optimization_results.dropna(subset=["silhouette"])
-        .nlargest(10, "silhouette")[
+        optimization_results.dropna(subset=["silhouette"]).nlargest(10, "silhouette")[
             ["eps", "min_samples", "n_clusters", "noise_pct", "silhouette"]
         ]
     )
 
     # Treina com os melhores parâmetros
-    best_config = optimization_results.dropna(subset=["silhouette"]).nlargest(1, "silhouette").iloc[0]
+    best_config = (
+        optimization_results.dropna(subset=["silhouette"])
+        .nlargest(1, "silhouette")
+        .iloc[0]
+    )
     clusterer.eps = best_config["eps"]
     clusterer.min_samples = int(best_config["min_samples"])
 

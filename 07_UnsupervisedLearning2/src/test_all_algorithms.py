@@ -7,12 +7,13 @@ import pandas as pd
 import numpy as np
 import sys
 from pathlib import Path
+import io
 
 # Configurar encoding para UTF-8
-if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
-# Adiciona o diretório atual ao path
+# Determina o diretório base
+BASE_DIR = Path(__file__).parent.parent
 sys.path.insert(0, str(Path(__file__).parent))
 
 from kmeans_clustering import KMeansEpithelialClusterer
@@ -20,13 +21,14 @@ from dbscan_clustering import DBSCANEpithelialClusterer
 
 try:
     from kmedoids_clustering import KMedoidsEpithelialClusterer
+
     KMEDOIDS_AVAILABLE = True
 except ImportError:
     print("⚠️ sklearn-extra não está instalado. K-medoids não será testado.")
     print("   Para instalar: pip install scikit-learn-extra")
     KMEDOIDS_AVAILABLE = False
 
-DATA_PATH = Path(__file__).parent / "data" / "RTVue_20221110_MLClass.csv"
+DATA_PATH = BASE_DIR / "data" / "RTVue_20221110_MLClass.csv"
 
 print("=" * 80)
 print("COMPARAÇÃO DE ALGORITMOS DE CLUSTERING")
@@ -112,14 +114,18 @@ print("=" * 80)
 
 print("\n❌ PROBLEMA IDENTIFICADO:")
 print("   Todos os algoritmos apresentam distribuição extremamente desequilibrada.")
-print("   Isso indica que os dados NÃO possuem estrutura natural de clusters distintos.\n")
+print(
+    "   Isso indica que os dados NÃO possuem estrutura natural de clusters distintos.\n"
+)
 
 print("💡 POSSÍVEIS CAUSAS:\n")
 
 print("1. 📊 OUTLIERS EXTREMOS:")
 print("   - Foram detectados 1364 outliers (~25% dos dados)")
 print("   - Valores extremos como C=770, S=7318, N=2310")
-print("   - Esses outliers forçam os dados normais a se concentrarem em um único cluster")
+print(
+    "   - Esses outliers forçam os dados normais a se concentrarem em um único cluster"
+)
 
 print("\n2. 🎯 HOMOGENEIDADE DOS DADOS:")
 print("   - A maioria dos dados está concentrada em uma faixa muito estreita")

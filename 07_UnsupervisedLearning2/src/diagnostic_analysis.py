@@ -1,6 +1,12 @@
 """
 Script de Análise Diagnóstica dos Dados de Espessura Epitelial
-Objetivo: Entender por que os algoritmos de clustering não estão encontrando perfis distintos
+Objetivo: Entender por que os algoritmos de clustering não estão encontrando perfis diprint("=" * 80)
+print("8. GERANDO VISUALIZAÇÕES DIAGNÓSTICAS")
+print("=" * 80)
+
+RESULTS_DIR.mkdir(exist_ok=True)
+
+# 8.1. Distribuições
 """
 
 import pandas as pd
@@ -12,21 +18,26 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from pathlib import Path
 import sys
+import io
 
 # Configurar encoding para UTF-8
-if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 # Configurações
 sns.set_style("whitegrid")
 plt.rcParams["figure.figsize"] = (14, 10)
+
+# Determina o diretório base (pai de src/)
+BASE_DIR = Path(__file__).parent.parent
+DATA_PATH = BASE_DIR / "data" / "RTVue_20221110_MLClass.csv"
+RESULTS_DIR = BASE_DIR / "results"
 
 # Carrega os dados
 print("=" * 80)
 print("ANÁLISE DIAGNÓSTICA - DADOS DE ESPESSURA EPITELIAL")
 print("=" * 80)
 
-data = pd.read_csv("data/RTVue_20221110_MLClass.csv")
+data = pd.read_csv(DATA_PATH)
 features = ["C", "S", "ST", "T", "IT", "I", "IN", "N", "SN"]
 df_features = data[features].dropna()
 
@@ -63,10 +74,14 @@ for col in features:
     IQR = Q3 - Q1
     lower_bound = Q1 - 1.5 * IQR
     upper_bound = Q3 + 1.5 * IQR
-    outliers = df_features[(df_features[col] < lower_bound) | (df_features[col] > upper_bound)][col]
+    outliers = df_features[
+        (df_features[col] < lower_bound) | (df_features[col] > upper_bound)
+    ][col]
     outliers_count[col] = len(outliers)
     if len(outliers) > 0:
-        print(f"\n{col}: {len(outliers)} outliers ({len(outliers)/len(df_features)*100:.2f}%)")
+        print(
+            f"\n{col}: {len(outliers)} outliers ({len(outliers)/len(df_features)*100:.2f}%)"
+        )
         print(f"  Valores: min={outliers.min()}, max={outliers.max()}")
         print(f"  Range normal: [{lower_bound:.2f}, {upper_bound:.2f}]")
 
@@ -80,7 +95,9 @@ print("=" * 80)
 
 corr_matrix = df_features.corr()
 print("\nMédia das correlações (excluindo diagonal):")
-mean_corr = (corr_matrix.sum().sum() - len(features)) / (len(features) * (len(features) - 1))
+mean_corr = (corr_matrix.sum().sum() - len(features)) / (
+    len(features) * (len(features) - 1)
+)
 print(f"  {mean_corr:.4f}")
 
 print("\nMaiores correlações:")
@@ -146,34 +163,40 @@ print("\n" + "=" * 80)
 print("8. GERANDO VISUALIZAÇÕES DIAGNÓSTICAS")
 print("=" * 80)
 
-results_dir = Path("results")
-results_dir.mkdir(exist_ok=True)
+RESULTS_DIR = Path("results")
+RESULTS_DIR.mkdir(exist_ok=True)
 
 # 8.1. Distribuições
 fig, axes = plt.subplots(3, 3, figsize=(18, 15))
-fig.suptitle("Distribuições das Features de Espessura Epitelial", fontsize=16, fontweight="bold")
+fig.suptitle(
+    "Distribuições das Features de Espessura Epitelial", fontsize=16, fontweight="bold"
+)
 
 for idx, col in enumerate(features):
     ax = axes[idx // 3, idx % 3]
     ax.hist(df_features[col], bins=50, edgecolor="black", alpha=0.7)
-    ax.set_title(f"{col} (μ={df_features[col].mean():.1f}, σ={df_features[col].std():.1f})")
+    ax.set_title(
+        f"{col} (μ={df_features[col].mean():.1f}, σ={df_features[col].std():.1f})"
+    )
     ax.set_xlabel("Espessura (μm)")
     ax.set_ylabel("Frequência")
     ax.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig(results_dir / "diagnostic_distributions.png", dpi=300, bbox_inches="tight")
+plt.savefig(RESULTS_DIR / "diagnostic_distributions.png", dpi=300, bbox_inches="tight")
 plt.close()
 print("  ✓ Distribuições salvas")
 
 # 8.2. Boxplots
 fig, ax = plt.subplots(figsize=(14, 6))
 df_features.boxplot(ax=ax)
-ax.set_title("Boxplots das Features de Espessura Epitelial", fontsize=14, fontweight="bold")
+ax.set_title(
+    "Boxplots das Features de Espessura Epitelial", fontsize=14, fontweight="bold"
+)
 ax.set_ylabel("Espessura (μm)")
 ax.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig(results_dir / "diagnostic_boxplots.png", dpi=300, bbox_inches="tight")
+plt.savefig(RESULTS_DIR / "diagnostic_boxplots.png", dpi=300, bbox_inches="tight")
 plt.close()
 print("  ✓ Boxplots salvos")
 
@@ -182,7 +205,7 @@ fig, ax = plt.subplots(figsize=(10, 8))
 sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", center=0, ax=ax)
 ax.set_title("Mapa de Correlação entre Features", fontsize=14, fontweight="bold")
 plt.tight_layout()
-plt.savefig(results_dir / "diagnostic_correlation.png", dpi=300, bbox_inches="tight")
+plt.savefig(RESULTS_DIR / "diagnostic_correlation.png", dpi=300, bbox_inches="tight")
 plt.close()
 print("  ✓ Mapa de correlação salvo")
 
@@ -190,8 +213,11 @@ print("  ✓ Mapa de correlação salvo")
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
 
 # Scree plot
-ax1.plot(range(1, len(pca.explained_variance_ratio_) + 1), 
-         pca.explained_variance_ratio_ * 100, 'bo-')
+ax1.plot(
+    range(1, len(pca.explained_variance_ratio_) + 1),
+    pca.explained_variance_ratio_ * 100,
+    "bo-",
+)
 ax1.set_xlabel("Componente Principal")
 ax1.set_ylabel("Variância Explicada (%)")
 ax1.set_title("Scree Plot - Variância Explicada por Componente")
@@ -206,62 +232,36 @@ ax2.set_title("Projeção nos 2 Primeiros Componentes Principais")
 ax2.grid(True, alpha=0.3)
 
 plt.tight_layout()
-plt.savefig(results_dir / "diagnostic_pca.png", dpi=300, bbox_inches="tight")
+plt.savefig(RESULTS_DIR / "diagnostic_pca.png", dpi=300, bbox_inches="tight")
 plt.close()
 print("  ✓ Análise PCA salva")
 
 # 8.5. Distâncias ao centroide
 fig, ax = plt.subplots(figsize=(12, 6))
 ax.hist(distances, bins=50, edgecolor="black", alpha=0.7)
-ax.axvline(distances.mean(), color="red", linestyle="--", linewidth=2, label=f"Média: {distances.mean():.2f}")
-ax.axvline(np.median(distances), color="green", linestyle="--", linewidth=2, label=f"Mediana: {np.median(distances):.2f}")
+ax.axvline(
+    distances.mean(),
+    color="red",
+    linestyle="--",
+    linewidth=2,
+    label=f"Média: {distances.mean():.2f}",
+)
+ax.axvline(
+    np.median(distances),
+    color="green",
+    linestyle="--",
+    linewidth=2,
+    label=f"Mediana: {np.median(distances):.2f}",
+)
 ax.set_xlabel("Distância ao Centroide")
 ax.set_ylabel("Frequência")
 ax.set_title("Distribuição das Distâncias ao Centroide (dados normalizados)")
 ax.legend()
 ax.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig(results_dir / "diagnostic_distances.png", dpi=300, bbox_inches="tight")
+plt.savefig(RESULTS_DIR / "diagnostic_distances.png", dpi=300, bbox_inches="tight")
 plt.close()
 print("  ✓ Análise de distâncias salva")
-
-# 9. CONCLUSÕES
-print("\n" + "=" * 80)
-print("9. DIAGNÓSTICO PRELIMINAR")
-print("=" * 80)
-
-print("\n🔍 Possíveis razões para clusters desequilibrados:\n")
-
-# Baixa variabilidade
-if cv.mean() < 15:
-    print("  ⚠️ BAIXA VARIABILIDADE:")
-    print(f"     - Coeficiente de variação médio de apenas {cv.mean():.1f}%")
-    print("     - Os dados são muito homogêneos, dificultando a separação em clusters distintos")
-
-# Alta correlação
-if mean_corr > 0.7:
-    print("\n  ⚠️ ALTA CORRELAÇÃO ENTRE FEATURES:")
-    print(f"     - Correlação média de {mean_corr:.3f}")
-    print("     - As features são muito redundantes, não trazendo informação nova")
-
-# Poucos componentes principais necessários
-var_90 = np.where(np.cumsum(pca.explained_variance_ratio_) >= 0.90)[0][0] + 1
-if var_90 <= 2:
-    print(f"\n  ⚠️ BAIXA DIMENSIONALIDADE INTRÍNSECA:")
-    print(f"     - Apenas {var_90} componente(s) explicam 90% da variância")
-    print("     - Os dados vivem em um espaço de baixa dimensionalidade")
-
-# Distribuição das distâncias
-if distances.std() / distances.mean() < 0.3:
-    print(f"\n  ⚠️ DADOS MUITO CONCENTRADOS:")
-    print(f"     - CV das distâncias ao centroide: {(distances.std()/distances.mean())*100:.1f}%")
-    print("     - Os pontos estão muito próximos uns dos outros")
-
-# Muitos outliers
-if total_outliers > len(df_features) * 0.1:
-    print(f"\n  ⚠️ PRESENÇA DE OUTLIERS:")
-    print(f"     - {total_outliers} outliers detectados")
-    print("     - Outliers podem estar forçando todos os dados normais para um único cluster")
 
 print("\n" + "=" * 80)
 print("Análise completa! Visualizações salvas em 'results/'")

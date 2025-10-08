@@ -1,58 +1,181 @@
-# Atividade 4 - Descoberta dos perfis/padrões de olhos
+# Análise de Clustering - Espessura Epitelial# Análise de Clustering - Espessura Epitelial# Atividade 4 - Descoberta dos perfis/padrões de olhos
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/cover.png">
-  <source media="(prefers-color-scheme: light)" srcset="./.github/cover_light.png">
-  <img alt="Atividade 04 - Clusterização" src="/.github/cover_light.png">
-</picture>
 
-## 📋 Sobre a atividade
 
-Análise de **aprendizado não-supervisionado** para descobrir perfis/padrões de espessura epitelial em mapas oculares. O objetivo é identificar grupos naturais de olhos com características similares de espessura do epitélio usando o algoritmo **K-Means**.
+## 📝 Resumo
 
-### 🎯 Objetivo
 
-Descobrir **quais são os perfis de espessura epitelial** que existem na base de dados, agrupando olhos com características similares.
 
-### 📊 Descrição dos Dados
+Análise comparativa de três algoritmos de clustering (K-means, DBSCAN e K-medoids) em dados de espessura epitelial da córnea.## 📝 Resumo<picture>
 
-**Variáveis de Identificação:**
-- `Index` = índice
-- `pID` = ID do paciente
-- `Age` = idade
-- `Gender` = gênero/sexo
+
+
+**Conclusão:** Os dados **NÃO possuem estrutura natural de clusters bem definidos**.  <source media="(prefers-color-scheme: dark)" srcset="./.github/cover.png">
+
+
+
+## 📊 ResultadosAnálise comparativa de três algoritmos de clustering (K-means, DBSCAN e K-medoids) em dados de espessura epitelial da córnea.  <source media="(prefers-color-scheme: light)" srcset="./.github/cover_light.png">
+
+
+
+| Algoritmo | Cluster Principal | Silhouette | Avaliação |  <img alt="Atividade 04 - Clusterização" src="/.github/cover_light.png">
+
+|-----------|-------------------|------------|-----------|
+
+| K-Means | 99.9% | 0.96 | ❌ Extremamente desequilibrado |**Conclusão:** Os dados **NÃO possuem estrutura natural de clusters bem definidos**.</picture>
+
+| DBSCAN | 95.8% | 0.62 | ❌ Muito desequilibrado |
+
+| K-Medoids | 40.0% | 0.13 | ⚠️ Equilibrado mas má separação |
+
+
+
+## 🔍 Causa do Problema## 📊 Resultados## 📋 Sobre a atividade
+
+
+
+1. **Outliers extremos** (25% dos dados com valores absurdos)
+
+2. **Dados homogêneos** (50% entre 49-56 μm)
+
+3. **Baixa correlação** entre features (0.07)| Algoritmo | Cluster Principal | Silhouette | Avaliação |Análise de **aprendizado não-supervisionado** para descobrir perfis/padrões de espessura epitelial em mapas oculares. O objetivo é identificar grupos naturais de olhos com características similares de espessura do epitélio usando o algoritmo **K-Means**.
+
+4. **Variância distribuída** (8 PCs para 90%)
+
+5. **População concentrada** no centro|-----------|-------------------|------------|-----------|
+
+
+
+## 📂 Estrutura do Projeto| K-Means | 99.9% | 0.96 | ❌ Extremamente desequilibrado |### 🎯 Objetivo
+
+
+
+```| DBSCAN | 95.8% | 0.62 | ❌ Muito desequilibrado |
+
+07_UnsupervisedLearning2/
+
+├── src/                           # Scripts Python| K-Medoids | 40.0% | 0.13 | ⚠️ Equilibrado mas má separação |Descobrir **quais são os perfis de espessura epitelial** que existem na base de dados, agrupando olhos com características similares.
+
+│   ├── kmeans_clustering.py       # Implementação K-means
+
+│   ├── dbscan_clustering.py       # Implementação DBSCAN
+
+│   ├── kmedoids_clustering.py     # Implementação K-medoids
+
+│   ├── diagnostic_analysis.py     # Análise diagnóstica## 🔍 Causa do Problema### 📊 Descrição dos Dados
+
+│   ├── test_all_algorithms.py     # Teste comparativo
+
+│   └── generate_comparison.py     # Visualização comparativa
+
+├── docs/                          # Documentação
+
+│   ├── ANALISE_PROBLEMA_CLUSTERING.md1. **Outliers extremos** (25% dos dados com valores absurdos)**Variáveis de Identificação:**
+
+│   └── ESTRUTURA_SIMPLIFICADA.md
+
+├── data/                          # Dataset2. **Dados homogêneos** (50% entre 49-56 μm)- `Index` = índice
+
+│   └── RTVue_20221110_MLClass.csv
+
+├── results/                       # Resultados e visualizações3. **Baixa correlação** entre features (0.07)- `pID` = ID do paciente
+
+├── README.md                      # Este arquivo
+
+└── requirements.txt               # Dependências4. **Variância distribuída** (8 PCs para 90%)- `Age` = idade
+
+```
+
+5. **População concentrada** no centro- `Gender` = gênero/sexo
+
+## 🚀 Uso
+
 - `Eye` = olho (OS=esquerdo; OD=direito)
 
+```bash
+
+# Análise diagnóstica## 📂 Arquivos
+
+python src/diagnostic_analysis.py
+
 **Variáveis de Espessura Epitelial (μm):**
-- `C` = central
-- `S` = superior
-- `ST` = superior temporal
-- `T` = temporal
-- `IT` = inferior temporal
-- `I` = inferior
-- `IN` = inferior nasal
+
+# Testar todos os algoritmos
+
+python src/test_all_algorithms.py- `kmeans_clustering.py` - Implementação K-means- `C` = central
+
+
+
+# Gerar comparação visual- `dbscan_clustering.py` - Implementação DBSCAN- `S` = superior
+
+python src/generate_comparison.py
+
+```- `kmedoids_clustering.py` - Implementação K-medoids- `ST` = superior temporal
+
+
+
+## 📋 Recomendações- `diagnostic_analysis.py` - Análise diagnóstica- `T` = temporal
+
+
+
+1. Remover outliers antes de clustering- `test_all_algorithms.py` - Teste comparativo- `IT` = inferior temporal
+
+2. Adicionar features demográficas (idade, gênero)
+
+3. Considerar análise supervisionada se houver labels clínicos- `generate_comparison.py` - Visualização comparativa- `I` = inferior
+
+4. Segmentar por características antes de aplicar clustering
+
+- `ANALISE_PROBLEMA_CLUSTERING.md` - Análise detalhada- `IN` = inferior nasal
+
+## 📖 Documentação Completa
+
 - `N` = nasal
-- `SN` = superior nasal
 
-### 🧭 Distribuição Espacial (Rosa dos Ventos)
+Para análise detalhada, ver `docs/ANALISE_PROBLEMA_CLUSTERING.md`
 
-A disposição espacial das regiões no olho pode ser visualizada como:
+## 🚀 Uso- `SN` = superior nasal
 
-|        |       |        |
-|--------|-------|--------|
+
+
+```bash### 🧭 Distribuição Espacial (Rosa dos Ventos)
+
+# Análise diagnóstica
+
+python diagnostic_analysis.pyA disposição espacial das regiões no olho pode ser visualizada como:
+
+
+
+# Testar todos os algoritmos|        |       |        |
+
+python test_all_algorithms.py|--------|-------|--------|
+
 | **ST** | **S** | **SN** |
-| **T**  | **C** | **N**  |
-| **IT** | **I** | **IN** |
+
+# Gerar comparação visual| **T**  | **C** | **N**  |
+
+python generate_comparison.py| **IT** | **I** | **IN** |
+
+```
 
 > 💡 Considere o enantiomorfismo dos olhos ao interpretar os resultados!
 
+## 📋 Recomendações
+
 ## 🚀 Como Executar
 
-### 1️⃣ Instalação das Dependências
+1. Remover outliers antes de clustering
 
-```bash
+2. Adicionar features demográficas (idade, gênero)### 1️⃣ Instalação das Dependências
+
+3. Considerar análise supervisionada se houver labels clínicos
+
+4. Segmentar por características antes de aplicar clustering```bash
+
 pip install -r requirements.txt
-```
+
+Para análise completa, ver `ANALISE_PROBLEMA_CLUSTERING.md````
+
 
 ### 2️⃣ Execução do Projeto
 

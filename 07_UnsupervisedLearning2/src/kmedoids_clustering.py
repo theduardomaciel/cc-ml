@@ -12,10 +12,10 @@ import seaborn as sns
 from pathlib import Path
 import warnings
 import sys
+import io
 
 # Configurar encoding para UTF-8
-if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 warnings.filterwarnings("ignore")
 
@@ -208,15 +208,22 @@ class KMedoidsEpithelialClusterer:
 
         return medoids
 
-    def save_results(self, output_path="results/kmedoids_results.csv"):
+    def save_results(self, output_path=None):
         """
         Salva os resultados em um arquivo CSV
 
         Args:
-            output_path (str): Caminho para salvar os resultados
+            output_path (str): Caminho para salvar os resultados (padrão: results/kmedoids_results.csv)
         """
         if self.labels is None:
             raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
+
+        if output_path is None:
+            output_path = (
+                Path(__file__).parent.parent / "results" / "kmedoids_results.csv"
+            )
+        else:
+            output_path = Path(output_path)
 
         # Combina features com labels
         results_df = self.features_data.copy()
@@ -241,8 +248,11 @@ class KMedoidsEpithelialClusterer:
 
 if __name__ == "__main__":
     # Exemplo de uso
+    BASE_DIR = Path(__file__).parent.parent
+    DATA_PATH = BASE_DIR / "data" / "RTVue_20221110_MLClass.csv"
+
     clusterer = KMedoidsEpithelialClusterer(n_clusters=3, method="pam")
-    clusterer.load_data("data/RTVue_20221110_MLClass.csv")
+    clusterer.load_data(str(DATA_PATH))
     clusterer.preprocess_data()
 
     # Encontra k ótimo
