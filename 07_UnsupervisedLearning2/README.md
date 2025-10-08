@@ -103,34 +103,6 @@ Explora variáveis demográficas (idade, gênero, lateralidade) em conjunto com 
 - 📈 **Correlações** entre demografia e perfis epiteliais
 - 📄 **Relatório estatístico** completo (ANOVA, Chi-Square, T-Test)
 
-**Importar Módulos (Para Scripts Customizados):**
-
-```python
-from preprocessing import load_and_preprocess
-from clustering import run_clustering, optimize_kmeans, optimize_dbscan
-from demographic_analysis import analyze_demographics
-
-# Carregar e preprocessar dados
-df, scaled_data, features, scaler = load_and_preprocess(
-    'data/RTVue_20221110_MLClass.csv',
-    remove_outliers=True
-)
-
-# Executar clustering
-results, df, scaled_data, features = run_clustering(
-    'data/RTVue_20221110_MLClass.csv',
-    output_dir='results',
-    remove_outliers=True
-)
-
-# Análise demográfica
-df_analyzed, age_results, gender_results, eye_results = analyze_demographics(
-    'data/RTVue_20221110_MLClass.csv',
-    n_clusters=3,
-    output_dir='results_demographic'
-)
-```
-
 ## 📁 Estrutura do Projeto
 
 ```
@@ -139,11 +111,7 @@ df_analyzed, age_results, gender_results, eye_results = analyze_demographics(
 │   ├── RTVue_20221110_MLClass.csv         # Dataset de espessura epitelial
 │   └── RTVue_20221110_MLClass.xlsx
 ├── results_with_outlier_removal/          # Resultados COM remoção de outliers
-│   ├── clustering_results.csv             
-│   └── clustering_comparison.png          
-├── results_without_outlier_removal/       # Resultados SEM remoção de outliers
-│   ├── clustering_results.csv             
-│   └── clustering_comparison.png          
+├── results_without_outlier_removal/       # Resultados SEM remoção de outliers     
 ├── results_demographic/                   # Análise demográfica
 │   ├── age_distribution.png               
 │   ├── gender_distribution.png            
@@ -196,7 +164,6 @@ df_analyzed, age_results, gender_results, eye_results = analyze_demographics(
 #### **K-Means**
 - Tentamos fazer a otimização automática do número de clusters
 - Métricas: Silhouette Score e Inércia
-- K fixo em 3 para consistência nas comparações
 - Parâmetros: `n_init=10`, `random_state=42`
 
 #### **DBSCAN**
@@ -288,16 +255,6 @@ results = run_clustering(
 )
 ```
 
-## 📚 Dependências
-
-- pandas >= 2.1.3
-- numpy >= 1.26.2
-- scikit-learn >= 1.3.2
-- scikit-learn-extra >= 0.3.0 (K-Medoids)
-- scipy >= 1.11.4 (detecção de outliers)
-- matplotlib >= 3.8.2
-- seaborn >= 0.13.0
-
 ## 🎓 Conceitos Aplicados
 
 - **Aprendizado Não-Supervisionado**: Descoberta de padrões sem labels
@@ -307,7 +264,7 @@ results = run_clustering(
 - **Avaliação de Clusters**: Múltiplas métricas de validação interna
 - **Análise Comparativa**: Avaliação de diferentes algoritmos no mesmo dataset
 
-## Integrantes
+## 👥 Integrantes
 
 - [Eduardo Maciel](https://github.com/theduardomaciel)
 - [Josenilton Ferreira](https://github.com/914joseph)
