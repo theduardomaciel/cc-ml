@@ -12,6 +12,7 @@ from sklearn.metrics import (
     davies_bouldin_score,
 )
 from preprocessing import load_and_preprocess
+from epithelial_mapping import create_cluster_average_maps, create_multiple_maps
 
 sns.set_style("whitegrid")
 
@@ -88,11 +89,11 @@ def run_clustering(file_path, output_dir="results", remove_outliers=True):
     )
 
     results = {}
+    best_k = 8  # Valor fixo para consistência
+    # best_k, kmeans_metrics = optimize_kmeans(scaled_data)
 
     # K-Means
     print("\n[2/4] K-Means")
-    best_k = 3  # Valor fixo para consistência
-    # best_k, kmeans_metrics = optimize_kmeans(scaled_data)
     kmeans = KMeans(n_clusters=best_k, random_state=42, n_init=10)
     kmeans_labels = kmeans.fit_predict(scaled_data)
 
@@ -180,6 +181,24 @@ def run_clustering(file_path, output_dir="results", remove_outliers=True):
     # Visualização comparativa
     plot_comparison(results, scaled_data, features, output_path)
 
+    # Gera mapas epiteliais
+    print("\n[BONUS] Gerando mapas epiteliais...")
+
+    # Mapas de amostras aleatórias
+    create_multiple_maps(
+        df, output_dir=str(output_path / "epithelial_maps"), n_samples=6
+    )
+
+    # Mapas médios por cluster para cada algoritmo
+    for algo in ["kmeans", "dbscan", "kmedoids"]:
+        if algo in results and "labels" in results[algo]:
+            print(f"  - Mapas do {algo.upper()}")
+            create_cluster_average_maps(
+                df,
+                results[algo]["labels"],
+                output_dir=str(output_path / "epithelial_maps" / algo),
+            )
+
     print(f"\n✓ Resultados salvos em: {output_path.absolute()}")
     return results, df, scaled_data, features
 
@@ -244,7 +263,7 @@ def plot_comparison(results, scaled_data, features, output_path):
         if data_to_plot:
             bp = ax.boxplot(
                 data_to_plot,
-                labels=[f"C{c}" for c in unique if c != -1],
+                tick_labels=[f"C{c}" for c in unique if c != -1],
                 patch_artist=True,
             )
             for patch in bp["boxes"]:

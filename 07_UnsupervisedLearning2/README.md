@@ -46,7 +46,21 @@ A disposição espacial das regiões no olho pode ser visualizada como:
 
 > 💡 Considere o enantiomorfismo dos olhos ao interpretar os resultados!
 
-## 🚀 Como Executar
+## Mapas Epiteliais Circulares
+
+O projeto inclui **visualizações circulares de mapeamento epitelial** similares aos mapas usados em oftalmologia clínica. Esses mapas mostram a espessura em cada região com um esquema de cores:
+
+- 🔴 **Vermelho**: Epitélio mais fino
+- 🟡 **Amarelo**: Espessura média  
+- 🟢 **Verde**: Epitélio mais espesso
+
+Os mapas são gerados para:
+- **Amostras individuais**: Visualização de pacientes específicos
+- **Médias por cluster**: Padrões característicos de cada grupo identificado
+
+📖 **Para detalhes completos sobre os mapas epiteliais, consulte: [`EPITHELIAL_MAPS.md`](./EPITHELIAL_MAPS.md)**
+
+## �🚀 Como Executar
 
 ### 1️⃣ Instalação das Dependências
 
