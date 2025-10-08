@@ -8,6 +8,9 @@
 
 ## 📋 Sobre a atividade
 
+> [!NOTE]
+> Para visualizar a apresentação de slides para essa atividade, acesse: [Slides - Atividade 4](https://www.canva.com/design/DAG1OGDlzE0/tZ62jnWkS6GIClgfOXUfEA/view?utm_content=DAG1OGDlzE0&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hecf1284e35)
+
 Análise de **aprendizado não-supervisionado** para descobrir perfis/padrões de espessura epitelial em mapas oculares. O projeto compara três algoritmos de clustering (**K-Means**, **DBSCAN** e **K-Medoids**) para identificar grupos naturais de olhos com características similares de espessura do epitélio.
 
 ### 🎯 Objetivo
@@ -45,18 +48,6 @@ A disposição espacial das regiões no olho pode ser visualizada como:
 | **IT** | **I** | **IN** |
 
 > 💡 Considere o enantiomorfismo dos olhos ao interpretar os resultados!
-
-## Mapas Epiteliais Circulares
-
-O projeto inclui **visualizações circulares de mapeamento epitelial** similares aos mapas usados em oftalmologia clínica. Esses mapas mostram a espessura em cada região com um esquema de cores:
-
-- 🔴 **Vermelho**: Epitélio mais fino
-- 🟡 **Amarelo**: Espessura média  
-- 🟢 **Verde**: Epitélio mais espesso
-
-Os mapas são gerados para:
-- **Amostras individuais**: Visualização de pacientes específicos
-- **Médias por cluster**: Padrões característicos de cada grupo identificado
 
 📖 **Para detalhes completos sobre os mapas epiteliais, consulte: [`EPITHELIAL_MAPS.md`](./EPITHELIAL_MAPS.md)**
 

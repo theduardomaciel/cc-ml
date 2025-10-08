@@ -8,6 +8,9 @@
 
 ## Sobre a atividade
 
+> [!NOTE]
+> Para visualizar a apresentação de slides para essa atividade, acesse: [Slides - Atividade 3](https://www.canva.com/design/DAG0hP0lHWY/gAhr4xAux7ETus-zLGoxfQ/view?utm_content=DAG0hP0lHWY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h8fa6cd83bf)
+
 Utilizar o arquivo anexo para encontrar os perfis de olhos (clustering) baseado nas respectivas medidas:
 * AL = comprimento axial do olho
 * ACD = profundidade de câmara anterior
