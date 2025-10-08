@@ -1,3 +1,28 @@
+def plot_k_selection_stats(k_stats, best_k, output_dir):
+    """
+    Gera gráfico da variação das médias e medianas dos clusters por k.
+    """
+    plt.figure(figsize=(8, 5))
+    plt.plot(
+        k_stats["k"], k_stats["mean_var"], marker="o", label="Variância das Médias"
+    )
+    plt.plot(
+        k_stats["k"], k_stats["median_var"], marker="s", label="Variância das Medianas"
+    )
+    plt.axvline(best_k, color="red", linestyle="--", label=f"k escolhido: {best_k}")
+    plt.title("Variação das Médias e Medianas dos Clusters por k")
+    plt.xlabel("Número de Clusters (k)")
+    plt.ylabel("Variância Média entre Clusters")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(Path(output_dir) / "k_selection_stats.png", dpi=300)
+    plt.close()
+    print(
+        "✓ Gráfico de variação das médias/medianas salvo como 'k_selection_stats.png'"
+    )
+
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -18,20 +43,61 @@ sns.set_style("whitegrid")
 
 
 def optimize_kmeans(scaled_data, max_k=10):
-    """Encontra melhor k para K-Means"""
+    """Encontra melhor k para K-Means usando métricas tradicionais"""
     metrics = {"k": [], "silhouette": [], "inertia": []}
+    for k in range(2, max_k + 1):
+        kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
+        labels = kmeans.fit_predict(scaled_data)
+        metrics["k"].append(k)
+        metrics["silhouette"].append(silhouette_score(scaled_data, labels))
+        metrics["inertia"].append(kmeans.inertia_)
+    best_k = metrics["k"][np.argmax(metrics["silhouette"])]
+    print(f"  Melhor k: {best_k} (Silhouette: {max(metrics['silhouette']):.4f})")
+    return best_k, metrics
+
+
+def interpret_k_by_cluster_stats(scaled_data, max_k=10):
+    """
+    Analisa a média e mediana dos clusters para interpretar quando k deixa de fazer sentido.
+    Retorna o melhor k baseado na estabilização das estatísticas dos clusters.
+    """
+    stats = {"k": [], "mean_var": [], "median_var": []}
+    previous_mean_var = None
+    previous_median_var = None
+    threshold = 0.01  # Variação mínima para considerar que estabilizou
 
     for k in range(2, max_k + 1):
         kmeans = KMeans(n_clusters=k, random_state=42, n_init=10)
         labels = kmeans.fit_predict(scaled_data)
+        cluster_means = []
+        cluster_medians = []
+        for cluster in range(k):
+            cluster_data = scaled_data[labels == cluster]
+            if len(cluster_data) > 0:
+                cluster_means.append(np.mean(cluster_data, axis=0))
+                cluster_medians.append(np.median(cluster_data, axis=0))
+        # Calcula variância das médias e medianas entre clusters
+        mean_var = np.mean(np.var(cluster_means, axis=0))
+        median_var = np.mean(np.var(cluster_medians, axis=0))
+        stats["k"].append(k)
+        stats["mean_var"].append(mean_var)
+        stats["median_var"].append(median_var)
 
-        metrics["k"].append(k)
-        metrics["silhouette"].append(silhouette_score(scaled_data, labels))
-        metrics["inertia"].append(kmeans.inertia_)
+        # Verifica estabilização
+        if previous_mean_var is not None and previous_median_var is not None:
+            mean_diff = abs(mean_var - previous_mean_var)
+            median_diff = abs(median_var - previous_median_var)
+            if mean_diff < threshold and median_diff < threshold:
+                print(
+                    f"  k={k}: Variação das médias/medianas estabilizou (mean_var={mean_var:.4f}, median_var={median_var:.4f})"
+                )
+                return k, stats
+        previous_mean_var = mean_var
+        previous_median_var = median_var
 
-    best_k = metrics["k"][np.argmax(metrics["silhouette"])]
-    print(f"  Melhor k: {best_k} (Silhouette: {max(metrics['silhouette']):.4f})")
-    return best_k, metrics
+    # Se não estabilizar, retorna o maior k
+    print(f"  Nenhuma estabilização clara encontrada. Usando k={max_k}")
+    return max_k, stats
 
 
 def optimize_dbscan(scaled_data):
@@ -89,8 +155,15 @@ def run_clustering(file_path, output_dir="results", remove_outliers=True):
     )
 
     results = {}
-    best_k = 8  # Valor fixo para consistência
-    # best_k, kmeans_metrics = optimize_kmeans(scaled_data)
+    # Pipeline para escolha de um bom k
+    print("\n[Escolha de k]")
+    best_k, k_stats = interpret_k_by_cluster_stats(scaled_data, max_k=10)
+    print(
+        f"  k escolhido: {best_k} (justificado pela estabilização das médias/medianas entre clusters)"
+    )
+
+    # Gera gráfico da variação das médias/medianas por k
+    plot_k_selection_stats(k_stats, best_k, output_dir)
 
     # K-Means
     print("\n[2/4] K-Means")

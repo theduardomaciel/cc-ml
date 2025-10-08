@@ -34,9 +34,9 @@ O mapa é dividido em **9 regiões anatômicas**:
 
 Os mapas utilizam um **gradiente de cores** invertido (RdYlGn_r - Red-Yellow-Green invertido):
 
-- � **Verde**: Epitélio mais FINO (valores baixos)
+- 🟢 **Verde**: Epitélio mais FINO (valores baixos)
 - 🟡 **Amarelo**: Espessura MÉDIA
-- � **Vermelho**: Epitélio mais ESPESSO (valores altos)
+- 🔴 **Vermelho**: Epitélio mais ESPESSO (valores altos)
 
 A barra de cores (colorbar) indica a escala de espessura em **micrômetros (μm)**.
 
