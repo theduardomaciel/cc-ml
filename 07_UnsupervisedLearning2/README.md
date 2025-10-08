@@ -137,24 +137,25 @@ df_analyzed, age_results, gender_results, eye_results = analyze_demographics(
 07_UnsupervisedLearning2/
 ├── data/
 │   ├── RTVue_20221110_MLClass.csv         # Dataset de espessura epitelial
-│   └── RTVue_20221110_MLClass.xlsx        # Versão Excel
+│   └── RTVue_20221110_MLClass.xlsx
 ├── results_with_outlier_removal/          # Resultados COM remoção de outliers
-│   ├── clustering_results.csv             # Métricas comparativas
-│   └── clustering_comparison.png          # Visualização comparativa
+│   ├── clustering_results.csv             
+│   └── clustering_comparison.png          
 ├── results_without_outlier_removal/       # Resultados SEM remoção de outliers
-│   ├── clustering_results.csv             # Métricas comparativas
-│   └── clustering_comparison.png          # Visualização comparativa
+│   ├── clustering_results.csv             
+│   └── clustering_comparison.png          
 ├── results_demographic/                   # Análise demográfica
-│   ├── age_distribution.png               # Distribuição etária por cluster
-│   ├── gender_distribution.png            # Análise de gênero
-│   ├── eye_laterality.png                 # Assimetrias OD vs OS
-│   ├── integrated_analysis.png            # Visão integrada
-│   └── statistical_report.txt             # Relatório estatístico
+│   ├── age_distribution.png               
+│   ├── gender_distribution.png            
+│   ├── eye_laterality.png                
+│   ├── integrated_analysis.png            
+│   └── statistical_report.txt
 ├── 🔧 preprocessing.py                    # Módulo: Pré-processamento de dados
 ├── 🔧 clustering.py                       # Módulo: Algoritmos de clustering
 ├── 🔧 demographic_analysis.py             # Módulo: Análise demográfica
-├── 📋 requirements.txt                    # Dependências
-└── 📖 README.md                           # Documentação
+├── 🔧 epithelial_mapping.py               # Módulo: Geração de mapas epiteliais
+├── 📋 requirements.txt
+└── 📖 README.md
 ```
 
 ### 🎯 Módulos Principais
@@ -193,7 +194,7 @@ df_analyzed, age_results, gender_results, eye_results = analyze_demographics(
 ### 2. Algoritmos de Clustering
 
 #### **K-Means**
-- Otimização automática do número de clusters (k=2 a k=10)
+- Tentamos fazer a otimização automática do número de clusters
 - Métricas: Silhouette Score e Inércia
 - K fixo em 3 para consistência nas comparações
 - Parâmetros: `n_init=10`, `random_state=42`
@@ -207,7 +208,7 @@ df_analyzed, age_results, gender_results, eye_results = analyze_demographics(
 #### **K-Medoids**
 - Alternativa robusta ao K-Means
 - Usa medóides (amostras reais) em vez de centróides
-- Mesma quantidade de clusters do K-Means (k=3)
+- Mesma quantidade de clusters do K-Means
 - Mais resistente a outliers
 
 ### 3. Avaliação e Comparação
@@ -305,3 +306,8 @@ results = run_clustering(
 - **Otimização de Hiperparâmetros**: Grid search para DBSCAN, Elbow Method para K-Means
 - **Avaliação de Clusters**: Múltiplas métricas de validação interna
 - **Análise Comparativa**: Avaliação de diferentes algoritmos no mesmo dataset
+
+## Integrantes
+
+- [Eduardo Maciel](https://github.com/theduardomaciel)
+- [Josenilton Ferreira](https://github.com/914joseph)
