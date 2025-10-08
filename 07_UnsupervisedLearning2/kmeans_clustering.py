@@ -1,8 +1,3 @@
-"""
-Módulo de Clusterização K-Means para Perfis de Espessura Epitelial
-Seguindo a metodologia KDD (Knowledge Discovery in Databases)
-"""
-
 import pandas as pd
 import numpy as np
 from sklearn.cluster import KMeans
@@ -14,285 +9,336 @@ from sklearn.metrics import (
 )
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 import warnings
 
 warnings.filterwarnings("ignore")
 
 
 class KMeansEpithelialClusterer:
-    """
-    Classe para clusterização de padrões de espessura epitelial usando K-Means.
-    Implementa as etapas do KDD: Seleção, Pré-processamento, Transformação,
-    Mineração e Interpretação.
-    """
-
     def __init__(self, n_clusters=3, random_state=42):
         """
-        Inicializa o clusterizador.
+        Inicializa o algoritmo K-Means para análise de espessura epitelial
 
         Args:
-            n_clusters (int): Número de clusters desejado
+            n_clusters (int): Número de clusters
             random_state (int): Semente para reprodutibilidade
         """
         self.n_clusters = n_clusters
         self.random_state = random_state
-        self.scaler = StandardScaler()
         self.kmeans = None
+        self.scaler = StandardScaler()
         self.data = None
-        self.data_normalized = None
-        self.features = ["C", "S", "ST", "T", "IT", "I", "IN", "N", "SN"]
-        self.feature_names = {
-            "C": "Central",
-            "S": "Superior",
-            "ST": "Superior Temporal",
-            "T": "Temporal",
-            "IT": "Inferior Temporal",
-            "I": "Inferior",
-            "IN": "Inferior Nasal",
-            "N": "Nasal",
-            "SN": "Superior Nasal",
-        }
+        self.features_data = None
+        self.scaled_data = None
+        self.labels = None
 
-    def load_and_select_data(self, filepath):
+    def load_data(self, file_path):
         """
-        KDD Etapa 1: Seleção de Dados
-        Carrega e seleciona as variáveis relevantes.
+        Carrega os dados do arquivo CSV
 
         Args:
-            filepath (str): Caminho para o arquivo CSV
-
-        Returns:
-            pd.DataFrame: Dados carregados
+            file_path (str): Caminho para o arquivo CSV
         """
-        print("=" * 60)
-        print("KDD ETAPA 1: SELEÇÃO DE DADOS")
-        print("=" * 60)
-
-        df = pd.read_csv(filepath)
-        print(f"✓ Dataset carregado: {df.shape[0]} registros, {df.shape[1]} colunas")
-        print(f"✓ Variáveis selecionadas para análise: {', '.join(self.features)}")
-
-        return df
-
-    def preprocess_data(self, df):
-        """
-        KDD Etapa 2: Pré-processamento
-        Remove valores ausentes e dados inconsistentes.
-
-        Args:
-            df (pd.DataFrame): Dataset original
-
-        Returns:
-            pd.DataFrame: Dados pré-processados
-        """
-        print("\n" + "=" * 60)
-        print("KDD ETAPA 2: PRÉ-PROCESSAMENTO")
-        print("=" * 60)
-
-        initial_count = len(df)
-
-        # Remover valores ausentes
-        df_clean = df[self.features].dropna()
-
-        removed_count = initial_count - len(df_clean)
-        print(f"✓ Registros removidos (valores ausentes): {removed_count}")
-        print(f"✓ Registros restantes: {len(df_clean)}")
-
-        # Estatísticas descritivas
-        print("\nEstatísticas Descritivas:")
-        print(df_clean.describe().round(2))
-
-        self.data = df_clean
-        return df_clean
-
-    def transform_data(self):
-        """
-        KDD Etapa 3: Transformação
-        Normaliza os dados usando StandardScaler.
-
-        Returns:
-            np.ndarray: Dados normalizados
-        """
-        print("\n" + "=" * 60)
-        print("KDD ETAPA 3: TRANSFORMAÇÃO")
-        print("=" * 60)
-
-        self.data_normalized = self.scaler.fit_transform(self.data)
-
-        print("✓ Normalização aplicada (StandardScaler)")
-        print(f"✓ Forma dos dados normalizados: {self.data_normalized.shape}")
-        print(f"✓ Média após normalização: {self.data_normalized.mean():.6f}")
-        print(f"✓ Desvio padrão após normalização: {self.data_normalized.std():.6f}")
-
-        return self.data_normalized
-
-    def mine_data(self):
-        """
-        KDD Etapa 4: Mineração de Dados
-        Aplica o algoritmo K-Means.
-
-        Returns:
-            np.ndarray: Labels dos clusters
-        """
-        print("\n" + "=" * 60)
-        print("KDD ETAPA 4: MINERAÇÃO DE DADOS (K-MEANS)")
-        print("=" * 60)
-
-        self.kmeans = KMeans(
-            n_clusters=self.n_clusters, n_init=10, random_state=self.random_state
+        self.data = pd.read_csv(file_path)
+        print(
+            f"Dados carregados: {self.data.shape[0]} amostras, {self.data.shape[1]} características"
         )
+        print(f"Valores ausentes por coluna:\n{self.data.isnull().sum()}")
 
-        labels = self.kmeans.fit_predict(self.data_normalized)
-
-        print(f"✓ Algoritmo: K-Means")
-        print(f"✓ Número de clusters: {self.n_clusters}")
-        print(f"✓ Número de inicializações: 10")
-        print(f"✓ Iterações até convergência: {self.kmeans.n_iter_}")
-        print(f"✓ Inércia: {self.kmeans.inertia_:.2f}")
-
-        return labels
-
-    def evaluate_clustering(self, labels):
+    def preprocess_data(self):
         """
-        Avalia a qualidade da clusterização usando múltiplas métricas.
+        Preprocessa os dados: seleciona apenas as variáveis de espessura epitelial e normaliza
+        Remove linhas com valores ausentes nas features de interesse
+        """
+        if self.data is None:
+            raise ValueError(
+                "Os dados ainda não foram carregados. Use load_data primeiro."
+            )
+
+        # Seleciona apenas as variáveis de espessura epitelial
+        # C=central, S=superior, ST=superior temporal, T=temporal,
+        # IT=inferior temporal, I=inferior, IN=inferior nasal, N=nasal, SN=superior nasal
+        features = ["C", "S", "ST", "T", "IT", "I", "IN", "N", "SN"]
+        self.features_data = self.data[features].copy()
+
+        # Remove linhas com valores ausentes
+        print(f"\nLinhas antes de remover NaN: {len(self.features_data)}")
+        self.features_data = self.features_data.dropna()
+        print(f"Linhas após remover NaN: {len(self.features_data)}")
+
+        # Normaliza os dados
+        self.scaled_data = self.scaler.fit_transform(self.features_data)
+
+        print("\nDados preprocessados e normalizados")
+        print(f"Características utilizadas: {features}")
+        print(f"Estatísticas descritivas:")
+        print(self.features_data.describe())
+
+    def find_optimal_clusters(self, max_clusters=10):
+        """
+        Encontra o número ótimo de clusters usando diferentes métricas
 
         Args:
-            labels (np.ndarray): Labels dos clusters
+            max_clusters (int): Número máximo de clusters a testar
 
         Returns:
-            dict: Dicionário com as métricas
+            dict: Dicionário com as métricas para cada número de clusters
         """
-        print("\n" + "=" * 60)
-        print("AVALIAÇÃO DA CLUSTERIZAÇÃO")
-        print("=" * 60)
+        if self.scaled_data is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
+            )
 
         metrics = {
-            "silhouette": silhouette_score(self.data_normalized, labels),
-            "calinski_harabasz": calinski_harabasz_score(self.data_normalized, labels),
-            "davies_bouldin": davies_bouldin_score(self.data_normalized, labels),
-            "inertia": self.kmeans.inertia_,
+            "n_clusters": [],
+            "inertia": [],
+            "silhouette": [],
+            "calinski_harabasz": [],
+            "davies_bouldin": [],
         }
 
-        print(f"✓ Silhouette Score: {metrics['silhouette']:.4f}")
-        print(f"  (Varia de -1 a 1, quanto maior melhor)")
-        print(f"\n✓ Calinski-Harabasz Score: {metrics['calinski_harabasz']:.2f}")
-        print(f"  (Quanto maior melhor)")
-        print(f"\n✓ Davies-Bouldin Score: {metrics['davies_bouldin']:.4f}")
-        print(f"  (Quanto menor melhor)")
-        print(f"\n✓ Inércia: {metrics['inertia']:.2f}")
-        print(f"  (Soma das distâncias quadradas aos centróides)")
+        print(f"\n🔍 Testando de 2 a {max_clusters} clusters...")
+
+        for k in range(2, max_clusters + 1):
+            kmeans = KMeans(n_clusters=k, random_state=self.random_state, n_init=10)
+            labels = kmeans.fit_predict(self.scaled_data)
+
+            metrics["n_clusters"].append(k)
+            metrics["inertia"].append(kmeans.inertia_)
+            metrics["silhouette"].append(silhouette_score(self.scaled_data, labels))
+            metrics["calinski_harabasz"].append(
+                calinski_harabasz_score(self.scaled_data, labels)
+            )
+            metrics["davies_bouldin"].append(
+                davies_bouldin_score(self.scaled_data, labels)
+            )
+
+            print(
+                f"  k={k}: Silhouette={metrics['silhouette'][-1]:.3f}, "
+                f"Calinski-Harabasz={metrics['calinski_harabasz'][-1]:.2f}, "
+                f"Davies-Bouldin={metrics['davies_bouldin'][-1]:.3f}"
+            )
 
         return metrics
 
-    def interpret_results(self, labels):
+    def fit(self):
         """
-        KDD Etapa 5: Interpretação/Avaliação
-        Analisa e interpreta os clusters formados.
+        Treina o modelo K-Means com o número de clusters especificado
+        """
+        if self.scaled_data is None:
+            raise ValueError(
+                "Os dados ainda não foram preprocessados. Use preprocess_data primeiro."
+            )
 
-        Args:
-            labels (np.ndarray): Labels dos clusters
+        print(f"\n🎯 Treinando K-Means com {self.n_clusters} clusters...")
+        self.kmeans = KMeans(
+            n_clusters=self.n_clusters, random_state=self.random_state, n_init=10
+        )
+        self.labels = self.kmeans.fit_predict(self.scaled_data)
+
+        # Calcula métricas
+        silhouette = silhouette_score(self.scaled_data, self.labels)
+        calinski = calinski_harabasz_score(self.scaled_data, self.labels)
+        davies = davies_bouldin_score(self.scaled_data, self.labels)
+
+        print(f"\n📊 Métricas do modelo:")
+        print(f"  Silhouette Score: {silhouette:.4f}")
+        print(f"  Calinski-Harabasz Score: {calinski:.2f}")
+        print(f"  Davies-Bouldin Score: {davies:.4f}")
+        print(f"  Inércia: {self.kmeans.inertia_:.2f}")
+
+        return self
+
+    def get_cluster_profiles(self):
+        """
+        Retorna o perfil de cada cluster
 
         Returns:
-            pd.DataFrame: DataFrame com informações dos clusters
+            tuple: (DataFrame com estatísticas dos clusters, Series com contagens)
         """
-        print("\n" + "=" * 60)
-        print("KDD ETAPA 5: INTERPRETAÇÃO/AVALIAÇÃO")
-        print("=" * 60)
+        if self.labels is None:
+            raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
 
-        # Adicionar labels aos dados originais
-        df_result = self.data.copy()
-        df_result["Cluster"] = labels
+        # Adiciona labels aos dados
+        data_with_clusters = self.features_data.copy()
+        data_with_clusters["Cluster"] = self.labels
 
-        # Análise por cluster
-        cluster_info = []
+        # Calcula estatísticas por cluster
+        cluster_stats = data_with_clusters.groupby("Cluster").agg(
+            ["mean", "std", "min", "max"]
+        )
 
-        for cluster_id in range(self.n_clusters):
-            cluster_data = df_result[df_result["Cluster"] == cluster_id]
+        # Conta número de amostras por cluster
+        cluster_counts = data_with_clusters["Cluster"].value_counts().sort_index()
 
-            info = {
-                "Cluster": f"Cluster {cluster_id}",
-                "Tamanho": len(cluster_data),
-                "Percentual": f"{len(cluster_data) / len(df_result) * 100:.1f}%",
-            }
+        print(f"\n📈 Distribuição de amostras por cluster:")
+        for cluster, count in cluster_counts.items():
+            percentage = (count / len(data_with_clusters)) * 100
+            print(f"  Cluster {cluster}: {count} amostras ({percentage:.1f}%)")
 
-            # Médias de cada região
-            for feature in self.features:
-                info[f"{feature}_média"] = cluster_data[feature].mean()
-                info[f"{feature}_std"] = cluster_data[feature].std()
+        return cluster_stats, cluster_counts
 
-            cluster_info.append(info)
+    def visualize_clusters(self, save_path=None):
+        """
+        Visualiza os clusters encontrados
 
-        df_cluster_info = pd.DataFrame(cluster_info)
+        Args:
+            save_path (str, optional): Caminho para salvar a figura
+        """
+        if self.labels is None:
+            raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
 
-        # Exibir informações
-        print("\nDistribuição dos Clusters:")
-        for _, row in df_cluster_info.iterrows():
-            print(f"  {row['Cluster']}: {row['Tamanho']} olhos ({row['Percentual']})")
+        # Adiciona labels aos dados
+        data_with_clusters = self.features_data.copy()
+        data_with_clusters["Cluster"] = self.labels
 
-        print("\nPerfis Médios de Espessura Epitelial (μm):")
-        print("-" * 60)
+        fig, axes = plt.subplots(3, 3, figsize=(18, 15))
+        fig.suptitle(
+            "Distribuição de Espessura Epitelial por Cluster\nAnálise de Perfis de Olhos",
+            fontsize=16,
+            fontweight="bold",
+        )
 
-        for cluster_id in range(self.n_clusters):
-            print(f"\n{df_cluster_info.iloc[cluster_id]['Cluster']}:")
-            for feature in self.features:
-                mean_val = df_cluster_info.iloc[cluster_id][f"{feature}_média"]
-                std_val = df_cluster_info.iloc[cluster_id][f"{feature}_std"]
-                print(
-                    f"  {self.feature_names[feature]:20s}: {mean_val:5.1f} ± {std_val:4.1f} μm"
+        features = ["C", "S", "ST", "T", "IT", "I", "IN", "N", "SN"]
+        colors = sns.color_palette("husl", self.n_clusters)
+
+        for idx, feature in enumerate(features):
+            ax = axes[idx // 3, idx % 3]
+
+            for cluster in range(self.n_clusters):
+                cluster_data = data_with_clusters[
+                    data_with_clusters["Cluster"] == cluster
+                ][feature]
+                ax.hist(
+                    cluster_data,
+                    alpha=0.6,
+                    label=f"Cluster {cluster}",
+                    bins=20,
+                    color=colors[cluster],
                 )
 
-        return df_result, df_cluster_info
+            ax.set_xlabel("Espessura (μm)")
+            ax.set_ylabel("Frequência")
+            ax.set_title(f"Região: {feature}", fontweight="bold")
+            ax.legend()
+            ax.grid(True, alpha=0.3)
 
-    def save_results(self, df_result, output_path="results/kmeans_results.csv"):
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches="tight")
+            print(f"\n💾 Figura salva em: {save_path}")
+
+        plt.show()
+
+    def visualize_cluster_means(self, save_path=None):
         """
-        Salva os resultados da clusterização.
+        Visualiza as médias de espessura por região para cada cluster
 
         Args:
-            df_result (pd.DataFrame): DataFrame com os clusters
-            output_path (str): Caminho para salvar o arquivo
+            save_path (str, optional): Caminho para salvar a figura
         """
-        import os
+        if self.labels is None:
+            raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
 
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        cluster_stats, _ = self.get_cluster_profiles()
 
-        df_result.to_csv(output_path, index=False)
-        print(f"\n✓ Resultados salvos em: {output_path}")
+        # Extrai médias
+        means_data = []
+        for cluster in range(self.n_clusters):
+            cluster_means = [
+                cluster_stats.loc[cluster, (feature, "mean")]
+                for feature in ["C", "S", "ST", "T", "IT", "I", "IN", "N", "SN"]
+            ]
+            means_data.append(cluster_means)
 
-    def fit(self, filepath):
+        # Cria visualização
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
+        fig.suptitle(
+            "Perfil Médio de Espessura Epitelial por Cluster",
+            fontsize=16,
+            fontweight="bold",
+        )
+
+        features = ["C", "S", "ST", "T", "IT", "I", "IN", "N", "SN"]
+        x = np.arange(len(features))
+        width = 0.25
+        colors = sns.color_palette("husl", self.n_clusters)
+
+        # Gráfico de barras
+        for i, (cluster_means, color) in enumerate(zip(means_data, colors)):
+            offset = width * (i - 1)
+            ax1.bar(
+                x + offset,
+                cluster_means,
+                width,
+                label=f"Cluster {i}",
+                alpha=0.8,
+                color=color,
+            )
+
+        ax1.set_xlabel("Região do Olho", fontweight="bold")
+        ax1.set_ylabel("Espessura Média (μm)", fontweight="bold")
+        ax1.set_title("Comparação de Espessuras por Região")
+        ax1.set_xticks(x)
+        ax1.set_xticklabels(features)
+        ax1.legend()
+        ax1.grid(True, alpha=0.3, axis="y")
+
+        # Radar chart
+        angles = np.linspace(0, 2 * np.pi, len(features), endpoint=False).tolist()
+        angles += angles[:1]
+
+        ax2 = plt.subplot(1, 2, 2, projection="polar")
+
+        for i, (cluster_means, color) in enumerate(zip(means_data, colors)):
+            values = cluster_means + [cluster_means[0]]
+            ax2.plot(
+                angles, values, "o-", linewidth=2, label=f"Cluster {i}", color=color
+            )
+            ax2.fill(angles, values, alpha=0.25, color=color)
+
+        ax2.set_xticks(angles[:-1])
+        ax2.set_xticklabels(features)
+        ax2.set_title("Radar Plot - Perfil Espacial", fontweight="bold", pad=20)
+        ax2.legend(loc="upper right", bbox_to_anchor=(1.3, 1.1))
+
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path, dpi=300, bbox_inches="tight")
+            print(f"\n💾 Figura salva em: {save_path}")
+
+        plt.show()
+
+    def save_results(self, output_path):
         """
-        Executa todo o pipeline KDD.
+        Salva os resultados da clusterização em CSV
 
         Args:
-            filepath (str): Caminho para o arquivo CSV
-
-        Returns:
-            tuple: (df_result, df_cluster_info, metrics)
+            output_path (str): Caminho para salvar o arquivo CSV
         """
-        # Etapa 1: Seleção
-        df = self.load_and_select_data(filepath)
+        if self.labels is None:
+            raise ValueError("O modelo ainda não foi treinado. Use fit primeiro.")
 
-        # Etapa 2: Pré-processamento
-        df_clean = self.preprocess_data(df)
+        results = self.features_data.copy()
+        results["Cluster"] = self.labels
 
-        # Etapa 3: Transformação
-        self.transform_data()
+        # Adiciona informações originais (se disponíveis)
+        if self.data is not None:
+            original_cols = ["Index", "pID", "Age", "Gender", "Eye"]
+            available_cols = [col for col in original_cols if col in self.data.columns]
+            for col in available_cols:
+                # Garante que os índices correspondem
+                results[col] = self.data.loc[results.index, col].values
 
-        # Etapa 4: Mineração
-        labels = self.mine_data()
-
-        # Avaliação
-        metrics = self.evaluate_clustering(labels)
-
-        # Etapa 5: Interpretação
-        df_result, df_cluster_info = self.interpret_results(labels)
-
-        return df_result, df_cluster_info, metrics
+        results.to_csv(output_path, index=False)
+        print(f"\n💾 Resultados salvos em: {output_path}")
 
 
 if __name__ == "__main__":
-    # Exemplo de uso
-    clusterer = KMeansEpithelialClusterer(n_clusters=3)
-    df_result, df_cluster_info, metrics = clusterer.fit(
-        "data/RTVue_20221110_MLClass.csv"
+    print(
+        "Este é um módulo de classes. Use o notebook 'analise_clustering.ipynb' para executar a análise."
     )
-    clusterer.save_results(df_result)
+    print("Ou importe a classe KMeansEpithelialClusterer em seus scripts.")
