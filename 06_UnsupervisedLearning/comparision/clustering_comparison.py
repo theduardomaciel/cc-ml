@@ -321,38 +321,6 @@ class ClusteringComparison:
         ax6 = axes[1, 2]
         ax6.axis("off")
 
-        stability_text = """
-        📊 ANÁLISE QUALITATIVA
-        
-        K-MEANS:
-        ✅ Número fixo de clusters (3)
-        ✅ Todos os pontos classificados
-        ✅ Resultado determinístico
-        ✅ Fácil interpretação clínica
-        ✅ Centroides bem definidos
-        
-        DBSCAN:
-        ❌ Número variável de clusters
-        ❌ Muitos pontos como "ruído"
-        ❌ Sensível aos parâmetros
-        ❌ Clusters de tamanhos irregulares
-        ✅ Detecta outliers automáticamente
-        
-        RECOMENDAÇÃO:
-        K-Means é mais adequado para
-        segmentação clínica estruturada
-        """
-
-        ax6.text(
-            0.05,
-            0.95,
-            stability_text,
-            transform=ax6.transAxes,
-            fontsize=11,
-            verticalalignment="top",
-            bbox=dict(boxstyle="round,pad=0.5", facecolor="lightblue", alpha=0.8),
-        )
-
         plt.tight_layout()
 
         if save_path:

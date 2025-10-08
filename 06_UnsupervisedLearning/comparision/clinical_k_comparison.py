@@ -263,23 +263,23 @@ class ClinicalKComparison:
         ax6.axis("off")
 
         protocol_text = """
-        📋 PROTOCOLOS CLÍNICOS
+        PROTOCOLOS CLÍNICOS
         
-        K=2 (BINÁRIO):
-        ✅ Grupo 1: Olhos Curtos/Normais
+        K=2:
+        -> Grupo 1: Olhos Curtos/Normais
            • Protocolos preventivos + hipermetropia
            
-        ✅ Grupo 2: Olhos Longos
+        -> Grupo 2: Olhos Longos
            • Protocolos para miopia
         
-        K=3 (CLÁSSICO):
-        ✅ Grupo 1: Hipermétropes
+        K=3:
+        -> Grupo 1: Hipermétropes
            • Monitoramento PIO + lentes divergentes
            
-        ✅ Grupo 2: Míopes  
+        -> Grupo 2: Míopes  
            • Controle progressão + lentes convergentes
            
-        ✅ Grupo 3: Emetrópicos
+        -> Grupo 3: Emetrópicos
            • Prevenção + acompanhamento
         
         COMPLEXIDADE:
